@@ -1,0 +1,41 @@
+﻿@model ErrorViewModel
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Login</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="LoginForm">
+        <div class="LogoContainer">
+            <img src="~/resources/images/logo.png" />
+        </div>
+        <div class="section1">
+            <div class="LoginBox">
+                <h4>Iniciar Sesion</h4>
+                <form asp-controller="Login" asp-action="Login" method="post">
+                    <input name="email" type="text" placeholder="Usuario" value required autofocus/>
+                    <input name="password" type="password" placeholder="Contraseña" required />
+                    @if(Model.ShowDescription)
+                    {
+                        <p style="color:red;">@Model.description</p>
+                    }
+                    <div class="remember">
+                    <input type="checkbox"/>
+                    <label>Mantener sesion</label>
+                    </div>
+                    <button type="submit">ENTRAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

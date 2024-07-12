@@ -1,0 +1,95 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, Verdana;
+    background-color: rgba(47, 50, 144, 0.69);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+div.LoginForm{
+    display:block;
+    width: 360px;
+    /*height: 680px;*/
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+div.LogoContainer{
+    height: 150px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+}
+
+div.LogoContainer img{
+    width:50%;
+    height: 90%;
+    margin:auto;
+}
+
+div.section1{
+    background-color:rgba(47, 50, 144, 0.69);
+    padding:60px 20px;
+}
+div.LoginBox {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+div.LoginBox h4 {
+    font-weight: 550;
+    color: rgb(47, 50, 144);
+    margin: 20px;
+}
+
+div.LoginBox form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+div.LoginBox form input{
+    width: 80%;
+    padding: 10px 0px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-bottom: 32px;
+}
+
+div.LoginBox form div input[type=checkbox]{
+   width: unset;
+}
+
+div.remember{
+    margin-left: -100px;
+}
+
+button {
+    width: 50%;
+    text-align: center;
+    background-color: rgba(47, 50, 144);
+    margin-bottom: 32px;
+    color: white;
+    padding: 5px;
+    margin-top: 15px;
+}
+
