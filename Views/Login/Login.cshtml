@@ -22,14 +22,14 @@
             <div class="LoginBox">
                 <h4>Iniciar Sesion</h4>
                 <form asp-controller="Login" asp-action="Login" method="post">
-                    <input name="email" type="text" placeholder="Usuario" value required autofocus/>
+                    <input name="email" type="text" placeholder="Usuario" required autofocus/>
                     <input name="password" type="password" placeholder="Contraseña" required />
                     @if(Model.ShowDescription)
                     {
                         <p style="color:red;">@Model.description</p>
                     }
                     <div class="remember">
-                    <input type="checkbox"/>
+                    <input name="Remember" type="checkbox" value="True"/>
                     <label>Mantener sesion</label>
                     </div>
                     <button type="submit">ENTRAR</button>

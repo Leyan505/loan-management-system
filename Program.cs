@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             options.LoginPath = "/Login/";
         });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+                      policy.RequireClaim(ClaimTypes.Role, "admin"));
+});
+
 var app = builder.Build();
+
 
 SeedData.Initialize(app.Configuration);
 

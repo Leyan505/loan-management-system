@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PrestamosCreciendo.Data;
 using System.Configuration;
@@ -37,6 +38,25 @@ namespace PrestamosCreciendo.Models
                         Email = "agente@agente.com",
                         Password = "1234",
                         Level = "agente"
+                    }
+                );
+                // Look for any movies.
+                if (context.Wallets.Any())
+                {
+                    return;   // DB has been seeded
+                }
+                context.Wallets.AddRange(
+                    new Wallet
+                    {
+                        Name = "caja principal",
+                        Country = 0,
+                        City = "Managua"
+                    },
+                    new Wallet
+                    {
+                        Name = "Caja secundaria",
+                        Country = 0,
+                        City = "Managua"
                     }
                 );
                 context.SaveChanges();

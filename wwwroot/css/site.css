@@ -20,3 +20,69 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#logout {
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.widget {
+    box-shadow: 0 0px 15px #4343430a !important;
+    border: solid 2px black;
+    border-bottom: solid 4px black;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+.widget-body {
+    padding: 1rem;
+}
+
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.pull-left {
+    float: left;
+}
+
+h3.widget-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.widget-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333333;
+}
+
+.big-icon {
+    font-size: 26px;
+}
+.watermark {
+    color: black;
+}
+.pull-right {
+    float: right;
+}
+
+.widget-header, .widget-body, .widget-footer {
+    padding: 1rem;
+}
+
+.widget-separator {
+    margin: 0 16px;
+}
+
+.form-group{
+    margin-bottom:24px;
+}

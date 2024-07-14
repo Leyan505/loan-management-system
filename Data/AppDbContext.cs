@@ -19,5 +19,6 @@ namespace PrestamosCreciendo.Data
         }
 
         public DbSet<Users> Users { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
     }
 }
