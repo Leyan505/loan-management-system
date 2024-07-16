@@ -1,0 +1,55 @@
+﻿@model WalletsList
+@{
+}
+<div class="row">
+    <div class="widget-table">
+        <h4 class="mb-2" "style=" font-weight:400;">Carteras</h4>
+        <hr class="mb-4" style="width: 100%;"/>
+        <div class="col-md-12 col-sm-12">
+            <table class="table table-striped admin-table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Ciudad</th>
+                        <th scope="col">Creada</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+        @if (Model._wallets != null)
+        {
+            @foreach (Wallet wallet in Model._wallets)
+            {
+                    <tr>
+                        <th scope="row">@wallet.Id</th>
+                        <td>@wallet.Name</td>
+                        <td>@wallet.City</td>
+                        <td>@wallet.Created_at</td>
+                        <td>
+                            <div class="row row-cols-auto">
+                                <div class="col">
+                                    <form method="post" asp-action="ManageWallets" asp-controller="Admin">
+                                        <input hidden name="Id" type="text" value=@wallet.Id />
+                                        <input hidden name="Action" type="text" value="Edit" />
+                                        <button type="submit" class="btn btn-primary">Editar</button>
+                                    </form>
+
+                                </div>
+                                <div class="col">
+                                    <form method="post" asp-action="ManageWallets" asp-controller="Admin">
+                                        <input hidden name="Id" type="text" value=@wallet.Id />
+                                        <input hidden name="Action" type="text" value="Delete" />
+                                        <button type="submit" class="btn btn-primary">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+            }
+        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

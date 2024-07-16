@@ -86,3 +86,74 @@ h3.widget-title {
 .form-group{
     margin-bottom:24px;
 }
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+    tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50% !important;
+    }
+
+    td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+        /*
+	Label the data
+	*/
+        table.admin-table td:nth-of-type(1):before {
+            content: "First Name";
+        }
+
+        td:nth-of-type(2):before {
+            content: "Last Name";
+        }
+
+        td:nth-of-type(3):before {
+            content: "Job Title";
+        }
+}
+
+.widget-table {
+    padding: 11px;
+    width: 96%;
+    margin: auto;
+    box-shadow: 0 0px 15px #4343430a !important;
+    border: solid 2px #807e7e;
+    border-bottom: solid 4px #807e7e;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+
+table button{
+    margin-top: .25rem;
+}
+
