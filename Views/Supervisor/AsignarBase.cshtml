@@ -1,0 +1,43 @@
+﻿@model List<AgentHasSupervisorDTO>
+@{
+}
+
+
+<div class="row">
+    <div class="widget-table">
+        <h4 class="mb-2" style=" font-weight:400;">Usuarios</h4>
+        <hr class="mb-4" />
+        <div class="col-md-12 col-sm-12">
+            <table class="table table-striped admin-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Cartera</th>
+                        <th scope="col">Pais</th>
+                        <th scope="col">Ciudad</th>
+                        <th scope="col">Base</th>
+                        <th scope="col">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+        @if (Model != null)
+        {
+            @foreach (AgentHasSupervisorDTO agentSupervisor in Model)
+            {
+                    <tr>
+                        <td>@agentSupervisor.AgentName</td>
+                        <td>@agentSupervisor.WalletName</td>
+                        <td>Nicaragua</td>
+                        <td>@agentSupervisor.City</td>
+                        <td>@agentSupervisor.Base</td>
+                        <td>
+                            <a class="btn btn-primary" asp-controller="Supervisor" asp-action="UpdateBase" asp-route-Id="@agentSupervisor.Id">Actualizar base</a>
+                        </td>
+                    </tr>
+            }
+        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

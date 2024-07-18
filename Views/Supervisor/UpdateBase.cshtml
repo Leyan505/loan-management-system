@@ -1,0 +1,28 @@
+﻿@model AgentHasSupervisor
+
+@{
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget">
+            <header class="widget-header">
+                <h4 class="widget-title">Actualizar</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" asp-controller="Supervisor" asp-action="UpdateBase">
+                    <div class="form-group">
+                        <label class="mb-1">Base:</label>
+                        <input value=@Model.Base class="form-control mb-3" name="Base" type="number">
+                        <input hidden value=@Model.Id name="AgentSupervisorId" />
+                        <div class="d-grid">
+                            <button type="submit" class="btn text-white" style="background-color:rgb(47, 50, 144);">Actualizar</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->
+</div>
