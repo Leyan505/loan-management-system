@@ -39,6 +39,8 @@ namespace PrestamosCreciendo.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUsers(Users user)
         {
+            CurrentUser = new LoggedUser(HttpContext);
+            ViewData["Level"] = CurrentUser.Level;
 
             if (ModelState.IsValid)
             {
@@ -49,7 +51,7 @@ namespace PrestamosCreciendo.Controllers
             {
                 return View(new ErrorViewModel { description = "Valores invalidos" });
             }
-            return View();
+            return RedirectToAction("ManageUsers", "Admin");
         }
 
 
@@ -75,7 +77,7 @@ namespace PrestamosCreciendo.Controllers
             {
                 return View(new ErrorViewModel { description = "Valores invalidos" });
             }
-            return View();
+            return RedirectToAction("ManageUsers", "Admin");
         }
 
         [HttpGet]
@@ -95,7 +97,7 @@ namespace PrestamosCreciendo.Controllers
                                    Level = user.Level,
                                    Password = user.Password
                                }).ToList();
-
+            
 
             return View(usersList);
         }
@@ -104,6 +106,7 @@ namespace PrestamosCreciendo.Controllers
         [HttpPost]
         public IActionResult ManageUsers(int Id, string Action)
         {
+
             if (Action.Equals("Edit"))
             {
                 return RedirectToAction("EditUsers", "Admin", new { Id = Id });
@@ -116,6 +119,11 @@ namespace PrestamosCreciendo.Controllers
      
                 _context.Users.Remove(User);
                 _context.SaveChanges();
+            }
+            if (Action.Equals("Asignar"))
+            {
+                return RedirectToAction("AssignAgent", "Admin", new { Id = Id });
+
             }
             return RedirectToAction("ManageUsers", "Admin");
 
@@ -221,6 +229,52 @@ namespace PrestamosCreciendo.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction("ManageWallets", "Admin");
+        }
+
+        [HttpGet]
+        public IActionResult AssignAgent(int Id)
+        {
+            CurrentUser = new LoggedUser(HttpContext);
+            ViewData["Level"] = CurrentUser.Level;
+
+            AgentsDTO Agents = new AgentsDTO()
+            {
+                AgentsList = (from user in _context.Users
+                         where user.Level == "agente"
+                         select new Users()
+                         {
+                             Name = user.Name,
+                             Email = user.Email,
+                             Password = user.Password,
+                             Level = user.Level,
+                             Id = user.Id
+                         }).ToList(),
+                WalletsList = (from wallet in _context.Wallets
+                               select wallet).ToList(),
+                SupervisorId = Id
+
+            };
+
+            
+
+            return View(Agents);
+        }
+
+        [HttpPost]
+        public IActionResult AssignAgent(int IdAgent, int IdSupervisor, int IdWallet)
+        {
+            AgentHasSupervisor relation = new AgentHasSupervisor()
+            {
+                IdAgent = IdAgent,
+                IdSupervisor = IdSupervisor,
+                IdWallet = IdWallet,
+                Base = 0,
+            };
+
+            _context.AgentSupervisor.Add(relation);
+            _context.SaveChanges();
+
+            return RedirectToAction("ManageUsers", "Admin");
         }
     }
 }
