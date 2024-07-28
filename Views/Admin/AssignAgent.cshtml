@@ -1,0 +1,51 @@
+﻿@model AgentsDTO
+@{
+}
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget">
+            <header class="widget-header">
+                <h4 class="widget-title">Asignar agente</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" asp-controller="Admin" asp-action="AssignAgent">
+                    <div class="form-group">
+                        <label class="mb-1" >Agente:</label>
+                        <select class="form-control mb-3" name="IdAgent">
+                            @foreach(UsersAssignDTO user in Model.AgentsList)
+                            {
+                                @if(!user.ocuped)
+                                {
+                                    <option value=@user.Id>@user.Name</option>
+                                }
+                            }
+                        </select>
+                        <label class="mb-1" >Cartera:</label>
+                        <select class="form-control mb-4" name="IdWallet">
+                            @foreach (WalletAssignDTO wallet in Model.WalletsList)
+                            {
+                                @if (!wallet.ocuped)
+                                {
+                                    <option value=@wallet.Id>@wallet.Name</option>
+                                }
+                            }
+                        </select>
+                        <input hidden value=@Model.SupervisorId name="IdSupervisor"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-grid">
+                            <button type="submit" class="btn text-white" style="background-color:rgb(47, 50, 144);">Asignar</button>
+                            @if (Model.Error != null)
+                            {
+                                <p style="color:red;">@Model.Error.description</p>
+                        
+                            }
+                        </div>
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->
+</div>

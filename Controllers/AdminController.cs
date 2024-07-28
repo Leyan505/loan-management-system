@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Diagnostics;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 using System.Diagnostics.Contracts;
 using System.Security.Claims;
-
+using System.Security.Cryptography;
+using System.Web;
 namespace PrestamosCreciendo.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
@@ -18,13 +20,59 @@ namespace PrestamosCreciendo.Controllers
             _context = context;
         }
 
-        
+        public static string GetRandomAlphanumericString(int length)
+        {
+            const string alphanumericCharacters =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+            return GetRandomString(length, alphanumericCharacters);
+        }
+
+        public static string GetRandomString(int length, IEnumerable<char> characterSet)
+        {
+            if (length < 0)
+                throw new ArgumentException("length must not be negative", "length");
+            if (length > int.MaxValue / 8) // 250 million chars ought to be enough for anybody
+                throw new ArgumentException("length is too big", "length");
+            if (characterSet == null)
+                throw new ArgumentNullException("characterSet");
+            var characterArray = characterSet.Distinct().ToArray();
+            if (characterArray.Length == 0)
+                throw new ArgumentException("characterSet must not be empty", "characterSet");
+
+            var bytes = new byte[length * 8];
+            RandomNumberGenerator.Create().GetBytes(bytes);
+            var result = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                ulong value = BitConverter.ToUInt64(bytes, i * 8);
+                result[i] = characterArray[value % (uint)characterArray.Length];
+            }
+            return new string(result);
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
             ViewData["Level"] = CurrentUser.Level;
-            return View();
+            float base_total = (from agsup in _context.AgentSupervisor
+                                select agsup.Base).Sum();
+
+            float total_bill = (from bill in _context.Bills
+                                select bill.Amount).Sum();
+            float total_summary = (from summary in _context.Summary
+                                   select summary.Amount).Sum();
+
+
+
+            return View(new AdminResumeDTO()
+            {
+                base_total = base_total,
+                total_bill = total_bill,    
+                total_summary = total_summary,
+            });
         }
 
 
@@ -86,18 +134,27 @@ namespace PrestamosCreciendo.Controllers
             CurrentUser = new LoggedUser(HttpContext);
             ViewData["Level"] = CurrentUser.Level;
 
-            UsersList usersList = new UsersList();
+            List<UsersList> usersList;
 
-            usersList._users = (from user in _context.Users 
-                               select new Users
-                               {
-                                   Id = user.Id,
-                                   Email = user.Email,
-                                   Name = user.Name,
-                                   Level = user.Level,
-                                   Password = user.Password
-                               }).ToList();
-            
+            usersList = (from user in _context.Users
+                         join supervisor in _context.AgentSupervisor on
+                         user.Id equals supervisor.IdAgent into sg
+                         from sup in sg.DefaultIfEmpty()
+                         join wallet in _context.Wallets 
+                         on sup.IdWallet equals wallet.Id into wg
+                         from wall in wg.DefaultIfEmpty()
+                         select new UsersList()
+                         {
+                             Id = user.Id,
+                             Email = user.Email,
+                             Name = user.Name,
+                             Level = user.Level,
+                             WalletName = wall.Name ?? string.Empty,
+                             SupervisorName = _context.Users.Where(x => x.Id == sup.IdSupervisor).FirstOrDefault().Name ?? string.Empty,
+                             ActiveUser = user.ActiveUser
+
+
+                         }).ToList();
 
             return View(usersList);
         }
@@ -116,8 +173,10 @@ namespace PrestamosCreciendo.Controllers
                 var User = (from user in _context.Users
                             where user.Id == Id
                             select user).FirstOrDefault();
-     
-                _context.Users.Remove(User);
+
+                User.ActiveUser = false;
+                User.Password = GetRandomAlphanumericString(8);
+                _context.Users.Update(User);
                 _context.SaveChanges();
             }
             if (Action.Equals("Asignar"))
@@ -240,22 +299,29 @@ namespace PrestamosCreciendo.Controllers
             AgentsDTO Agents = new AgentsDTO()
             {
                 AgentsList = (from user in _context.Users
-                         where user.Level == "agente"
-                         select new Users()
-                         {
-                             Name = user.Name,
-                             Email = user.Email,
-                             Password = user.Password,
-                             Level = user.Level,
-                             Id = user.Id
-                         }).ToList(),
+                              where user.Level == "agente"
+                              select new UsersAssignDTO()
+                              {
+                                  Name = user.Name,
+                                  Email = user.Email,
+                                  Password = user.Password,
+                                  Level = user.Level,
+                                  Id = user.Id,
+                                  ocuped = _context.AgentSupervisor.Where(x => x.IdAgent == user.Id).Any()
+                              }).ToList(),
                 WalletsList = (from wallet in _context.Wallets
-                               select wallet).ToList(),
+                               select new WalletAssignDTO()
+                               {
+                                   City = wallet.City,
+                                   Country = wallet.Country,
+                                   Created_at= wallet.Created_at,
+                                   Id = wallet.Id,
+                                   Name = wallet.Name,
+                                   ocuped = _context.AgentSupervisor.Where(x => x.IdWallet == wallet.Id).Any()
+                               }).ToList(),
                 SupervisorId = Id
 
             };
-
-            
 
             return View(Agents);
         }
@@ -263,12 +329,19 @@ namespace PrestamosCreciendo.Controllers
         [HttpPost]
         public IActionResult AssignAgent(int IdAgent, int IdSupervisor, int IdWallet)
         {
-            AgentHasSupervisor relation = new AgentHasSupervisor()
+            if(_context.AgentSupervisor.
+                Where(x => x.IdAgent == IdAgent && x.IdSupervisor == IdSupervisor)
+                .Any())
+            {
+                return RedirectToAction("AssignAgent", "Admin", new {id = IdSupervisor, ErrorMSJ = "Ya está asignado a este agente"});
+            }
+            SupervisorHasAgent relation = new SupervisorHasAgent()
             {
                 IdAgent = IdAgent,
                 IdSupervisor = IdSupervisor,
                 IdWallet = IdWallet,
                 Base = 0,
+                Created_at = DateTime.UtcNow
             };
 
             _context.AgentSupervisor.Add(relation);

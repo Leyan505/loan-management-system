@@ -6,7 +6,7 @@
         <h4 class="mb-2" "style=" font-weight:400;">Carteras</h4>
         <hr class="mb-4" style="width: 100%;"/>
         <div class="col-md-12 col-sm-12">
-            <table class="table table-striped admin-table">
+            <table class="table table-striped wallets-table">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -28,19 +28,19 @@
                         <td>@wallet.Created_at</td>
                         <td>
                             <div class="row row-cols-auto">
-                                <div class="col">
+                                <div class="col-md-3 col-6 float-start">
                                     <form method="post" asp-action="ManageWallets" asp-controller="Admin">
                                         <input hidden name="Id" type="text" value=@wallet.Id />
                                         <input hidden name="Action" type="text" value="Edit" />
-                                        <button type="submit" class="btn btn-primary">Editar</button>
+                                        <button type="submit" class="btn btnPrimary text-white">Editar</button>
                                     </form>
 
                                 </div>
-                                <div class="col">
+                                    <div class="col-md-3 col-6 float-end">
                                     <form method="post" asp-action="ManageWallets" asp-controller="Admin">
                                         <input hidden name="Id" type="text" value=@wallet.Id />
                                         <input hidden name="Action" type="text" value="Delete" />
-                                        <button type="submit" class="btn btn-primary">Eliminar</button>
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>
                                 </div>
                             </div>

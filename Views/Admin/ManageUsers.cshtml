@@ -1,12 +1,12 @@
-﻿@model UsersList
+﻿@model List<UsersList>
 @{
 }
 <div class="row">
     <div class="widget-table">
-        <h4 class="mb-2" "style="font-weight:400;">Usuarios</h4>
+        <h4 class="mb-2" style="font-weight:400;">Usuarios</h4>
         <hr class="mb-4" />
         <div class="col-md-12 col-sm-12">
-            <table class="table table-striped admin-table">
+            <table class="table table-striped users-table">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -19,46 +19,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model._users != null){
-                        @foreach(Users user in Model._users)
+                    @if (Model != null){
+                        @foreach(UsersList user in Model)
                         {
-                            <tr>
-                                <th scope="row">@user.Id</th>
-                                <td>@user.Email</td>
-                                <td>@user.Name</td>
-                                <td>@user.Level</td>
-                                <td>@Model.WalletName</td>
-                                <td>@Model.SupervisorName</td>
-                                <td>
-                                    <div class="row row-cols-auto">
-                                        <div class="col">
-                                            <form method="post" asp-action="ManageUsers" asp-controller="Admin">
-                                                <input hidden name="Id" type="text" value=@user.Id />
-                                                <input hidden name="Action" type="text" value="Edit" />
-                                                <button type="submit" class="btn btn-primary">Editar</button>
-                                            </form>
-
-                                        </div>
-                                        <div class="col">
-                                            <form method="post" asp-action="ManageUsers" asp-controller="Admin">
-                                                <input hidden name="Id" type="text" value=@user.Id />
-                                                <input hidden name="Action" type="text" value="Delete" />
-                                                <button type="submit" class="btn btn-primary">Eliminar</button>
-                                            </form>
-                                        </div>
-                                        @if (!user.Level.Equals("admin"))
-                                        {
-                                            <div class="col">
+                            @if(user.ActiveUser == true)
+                            {
+                                
+                                <tr>
+                                    <th scope="row">@user.Id</th>
+                                    <td>@user.Email</td>
+                                    <td>@user.Name</td>
+                                    <td>@user.Level</td>
+                                    <td>@user.WalletName</td>
+                                    <td>@user.SupervisorName</td>
+                                    <td>
+                                        <div class="row row-cols-auto clearfix gx-1">
+                                            <div class="col-md-3 col-6 float-start">
                                                 <form method="post" asp-action="ManageUsers" asp-controller="Admin">
                                                     <input hidden name="Id" type="text" value=@user.Id />
-                                                    <input hidden name="Action" type="text" value="Session" />
-                                                    <button type="submit" class="btn btn-primary">Session</button>
+                                                    <input hidden name="Action" type="text" value="Edit" />
+                                                    <button type="submit" class="btn btn-primary">Editar</button>
+                                                </form>
+
+                                            </div>
+
+                                            <div class="col-md-3 col-6 float-end">
+                                                <form method="post" asp-action="ManageUsers" asp-controller="Admin">
+                                                    <input hidden name="Id" type="text" value=@user.Id />
+                                                    <input hidden name="Action" type="text" value="Delete" />
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
                                                 </form>
                                             </div>
-                                         }
-                                    </div>
-                                </td>    
-                            </tr>
+                                        
+                                            <!--@if (!user.Level.Equals("admin"))
+                                            {
+                                                    <div class="col-md-3 col-6 float-start">
+                                                        <form method="post" asp-action="ManageUsers" asp-controller="Admin">
+                                                            <input hidden name="Id" type="text" value=@user.Id />
+                                                            <input hidden name="Action" type="text" value="Session" />
+                                                            <button type="submit" class="btn btn-secondary">Session</button>
+                                                        </form>
+                                                    </div>
+                                            }-->
+                                            @if (user.Level.Equals("supervisor"))
+                                            {
+                                                <div class="col-md-3 col-12 float-end ">
+                                                    <form method="post" asp-action="ManageUsers" asp-controller="Admin">
+                                                        <input hidden name="Id" type="text" value=@user.Id />
+                                                        <input hidden name="Action" type="text" value="Asignar" />
+                                                        <button type="submit" class="btn btnPrimary text-white">Asignar agente</button>
+                                                    </form>
+                                                </div>
+
+                                            }
+                                        </div>
+                                    </td>    
+                                </tr>
+                            }
                         }
                     }
                 </tbody>

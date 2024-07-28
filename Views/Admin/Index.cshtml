@@ -1,22 +1,64 @@
-﻿@{
-}
+﻿@model AdminResumeDTO
 
 <div class="row">
-    <div class="col-md-3 col-sm-6">
-        <a asp-controller="Admin" asp-action="Recuento">
-            <div class="widget">
-                <div class="widget-body clearfix" style="background-color: rgb(201,203,226)">
+    <div class="col-12 pb-2">
+        <small>Los montos siguientes son el total del sistema</small>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <a>
+            <div class="widget stats-widget widget-resume">
+                <div class="widget-body clearfix h-100 bg-white">
                     <div class="pull-left">
-                        <h3 class="widget-title text-black">
-                            Recuento del sistema
+                        <h3 class="widget-title text-dark">DISPONIBLE TOTAL</h3>
+                        <h3 class="widget-title text-dark">
+
+                            <b>@(Model.base_total - Model.total_bill)</b>
+                            @if (Model.total_summary > 0)
+                            {
+                                <span>+</span>
+                                <span class=""> @Model.total_summary</span>
+                                <span class="text-success">= @(Model.base_total - Model.total_bill + Model.total_summary)</span>
+                            }
+
                         </h3>
                     </div>
-                    <span class="pull-right big-icon watermark">
-                        <i class="fa-solid fa-table-list"></i>
-                    </span>
+                    <span class="pull-right big-icon text-danger watermark"><i class="fa fa-arrow-down"></i></span>
                 </div>
-            </div>
+            </div><!-- .widget -->
         </a>
+
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <a>
+            <div class="widget stats-widget widget-resume">
+                <div class="widget-body h-100 clearfix bg-white">
+                    <div class="pull-left">
+                        <h3 class="widget-title text-dark">RECAUDADO TOTAL</h3>
+                        <h3 class="widget-title text-dark"><b>@Model.total_summary</b></h3>
+                    </div>
+                    <span class="pull-right big-icon text-success watermark"><i class="fa fa-arrow-up"></i></span>
+                </div>
+            </div><!-- .widget -->
+        </a>
+
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <a>
+            <div class="widget stats-widget widget-resume">
+                <div class="widget-body h-100 clearfix bg-white">
+                    <div class="pull-left">
+                        <h3 class="widget-title text-dark">GASTOS TOTALES</h3>
+                        <h3 class="widget-title text-dark"><b>@Model.total_bill</b></h3>
+                    </div>
+                    <span class="pull-right big-icon text-warning watermark"><i class="fa fa-arrow-right"></i></span>
+                </div>
+            </div><!-- .widget -->
+        </a>
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="row m-0 d-block col-12 pb-4">
+        <hr>
     </div>
     <div class="col-md-3 col-sm-6">
         <a asp-controller="Admin" asp-action="CreateUsers">
@@ -66,7 +108,8 @@
             </div>
         </a>
     </div>
-    <div class="col-md-3 col-sm-6">
+    <!--
+        <div class="col-md-3 col-sm-6">
         <a asp-controller="Admin" asp-action="ManageWallets">
             <div class="widget">
                 <div class="widget-body clearfix" style="background-color: rgb(128,171,221)">
@@ -82,4 +125,5 @@
             </div>
         </a>
     </div>
+    -->
 </div>
