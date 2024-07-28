@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 
@@ -37,9 +38,9 @@ namespace PrestamosCreciendo.Controllers
                     if (level == "admin") 
                         return RedirectToAction("Index", "Admin");
                     if (level == "supervisor")
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Supervisor");
                     if (level == "agente")
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Agente");
                 }
             }
             return View(new ErrorViewModel());
@@ -61,6 +62,7 @@ namespace PrestamosCreciendo.Controllers
             new Claim(ClaimTypes.Name, user.Email),
             new Claim("FullName", user.Name),
             new Claim(ClaimTypes.Role, user.Level),
+            new Claim("Id", (user.Id).ToString()),
         };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -114,24 +116,16 @@ namespace PrestamosCreciendo.Controllers
 
         public async Task<Users> AuthenticateUser(string email, string Password)
         {
-            var query = (from user in _context.Users
+            Users query = (from user in _context.Users
                          where user.Password == Password
                          && user.Email == email 
-                         select user).ToList();
-            if (!query.Any())
+                         select user).FirstOrDefault();
+            if (query == null)
             {
                 return null;
             }
-
-            Users User = new Users
-            {
-                Name = query[0].Name,
-                Email = query[0].Email,
-                Password = query[0].Password,
-                Level = query[0].Level
-            };
-
-            return User;
+            
+            return query;
         }
     }
 }

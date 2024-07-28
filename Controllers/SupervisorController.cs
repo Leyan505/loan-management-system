@@ -27,15 +27,14 @@ namespace PrestamosCreciendo.Controllers
             ViewData["Level"] = CurrentUser.Level;
             int? supervisorId = CurrentUser.Id;
             var query = (from agent_supervisor in _context.AgentSupervisor
+                         where agent_supervisor.IdSupervisor == supervisorId
                         join users in _context.Users on agent_supervisor.IdAgent equals users.Id
                         join wallet in _context.Wallets on agent_supervisor.IdWallet equals wallet.Id
-                        select new AgentHasSupervisorDTO 
+                        select new SupervisorHasAgentDTO 
                         { 
-                            AgentName = users.Name, 
-                            WalletName = wallet.Name, 
-                            City = users.City, 
-                            Base = agent_supervisor.Base, 
-                            Id = agent_supervisor.Id 
+                            user = users,
+                            wallet_name = wallet.Name,
+                            base_total = agent_supervisor.Base
                         }).ToList();
 
             return View(query);
@@ -46,9 +45,17 @@ namespace PrestamosCreciendo.Controllers
             CurrentUser = new LoggedUser(HttpContext);
             ViewData["Level"] = CurrentUser.Level;
 
-            var query = (from agent_supervisor in _context.AgentSupervisor
-                         where agent_supervisor.Id == Id
-                         select agent_supervisor).FirstOrDefault();
+            var query = _context.Users.Where(x => x.Id == Id)
+                .Join(_context.AgentSupervisor, user => user.Id, agentSup => agentSup.IdAgent,
+                (user, agentSup) => new { user, agentSup })
+                .Join(_context.Wallets, agentSup1 => agentSup1.agentSup.IdWallet, wallet => wallet.Id
+                , (agentSup1, wallet) => new { agentSup1, wallet })
+                .Select(result => new AssignBaseDTO()
+                {
+                    users = result.agentSup1.user,
+                    wallet_name = result.wallet.Name,
+                    base_current = result.agentSup1.agentSup.Base,
+                }).FirstOrDefault();
 
             return View(query);
         }
@@ -59,15 +66,16 @@ namespace PrestamosCreciendo.Controllers
             ViewData["Level"] = CurrentUser.Level;
 
             var query = (from agent_supervisor in _context.AgentSupervisor
-                         where agent_supervisor.Id == AgentSupervisorId
-                         select new AgentHasSupervisor
+                         where agent_supervisor.IdAgent == AgentSupervisorId
+                         && agent_supervisor.IdSupervisor == CurrentUser.Id
+                         select new SupervisorHasAgent
                          {
                              Id = agent_supervisor.Id,
                              Created_at = agent_supervisor.Created_at,
-                             IdAgent = agent_supervisor.Id,
-                             IdSupervisor = agent_supervisor.Id,
-                             IdWallet = agent_supervisor.Id,
-                             Base = Base,
+                             IdAgent = agent_supervisor.IdAgent,
+                             IdSupervisor = agent_supervisor.IdSupervisor,
+                             IdWallet = agent_supervisor.IdWallet,
+                             Base = Base+agent_supervisor.Base,
                          }).FirstOrDefault();
             _context.AgentSupervisor.Update(query);
             _context.SaveChanges();
