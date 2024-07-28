@@ -5,7 +5,7 @@
     <div class="col-md-12 mb-2">
         <div class=" p-lg text-end">
             <a type="button" asp-controller="Agente" asp-action="ShowClients" class="btn btn-dark"><i class="fa fa-users"></i> Mostar clientes</a>
-            <a type="button" href="{{url('route')}}" class="btn btn-primary"><i class="fa fa-car"></i> Continuar ruta</a>
+            <a type="button" asp-controller="Route" asp-action="Index" class="btn btn-primary"><i class="fa fa-car"></i> Continuar ruta</a>
         </div><!-- .widget -->
     </div>
     @if (Model.show != null)
@@ -76,7 +76,7 @@
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>No</th>
+                        <th>Nro</th>
                         <th>Valor</th>
                         <th>Saldo</th>
                     </tr>

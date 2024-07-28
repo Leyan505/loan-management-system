@@ -29,15 +29,17 @@
             </form>
             <br class="clearfix">
             <table class="table agente-g-table">
+                <thead>
+                    <tr class="visible-lg">
+                        <th>Cartera</th>
+                        <th>Fecha</th>
+                        <th>Valor</th>
+                        <th>Detalle</th>
+                        <th>Categoría</th>
+                        <th>Agente</th>
+                    </tr>
+                </thead>
                 <tbody>
-                <tr class="visible-lg">
-                    <th>Cartera</th>
-                    <th>Fecha</th>
-                    <th>Valor</th>
-                    <th>Detalle</th>
-                    <th>Categoría</th>
-                    <th>Agente</th>
-                </tr>
                 @foreach(BillsDTO client in Model.clients)
                 {
                     <tr>

@@ -138,30 +138,32 @@ body {
         padding-left: 50% !important;
         height: 40px;
     }
-    td:last-child{
-        height: 100px;
-    }
 
-    td:before {
-        /* Now like a table header */
-        position: absolute;
-        /* Top/left values mimic padding */
-        top: 6px;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight:500;
-    }
+        td:last-child {
+            height: 100px;
+        }
+
+        td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
     td {
         text-align: left !important;
     }
 
-    .widget-table{
+    .widget-table {
         padding: 10px !important;
         width: 93% !important;
     }
-        /*
+    /*
 	Label the data
 	*/
     /*Manage users*/
@@ -176,12 +178,15 @@ body {
     table.users-table td:nth-of-type(3):before {
         content: "Nivel";
     }
+
     table.users-table td:nth-of-type(4):before {
         content: "Cartera";
     }
+
     table.users-table td:nth-of-type(5):before {
         content: "Supervisor";
     }
+
     table.users-table td:nth-of-type(6):before {
         content: "Acciones";
     }
@@ -191,6 +196,7 @@ body {
     table.wallets-table td:nth-of-type(1):before {
         content: "Nombre";
     }
+
     table.wallets-table td:nth-of-type(2):before {
         content: "Ciudad";
     }
@@ -219,21 +225,27 @@ body {
     table.client-table td:nth-of-type(4):before {
         content: "Total";
     }
+
     table.client-table td:nth-of-type(5):before {
         content: "Pagados";
     }
+
     table.client-table td:nth-of-type(6):before {
         content: "Vigentes";
     }
+
     table.client-table td:nth-of-type(7):before {
         content: "Monto Prestado";
     }
+
     table.client-table td:nth-of-type(8):before {
         content: "Monto Restante";
     }
+
     table.client-table td:nth-of-type(9):before {
         content: "Tipo";
     }
+
     table.client-table td:nth-of-type(10):before {
         content: "Accion";
     }
@@ -258,31 +270,92 @@ body {
     table.agente-payments-table td:nth-of-type(5):before {
         content: "Cuota";
     }
+
     table.agente-payments-table td:nth-of-type(6):before {
         content: "Accion";
+    }
+    /*Client Payments summary*/
+    table.agente-paymentsH-table td:nth-of-type(1):before {
+        content: "Fecha";
+    }
+
+    table.agente-paymentsH-table td:nth-of-type(2):before {
+        content: "Nro";
+    }
+
+    table.agente-paymentsH-table td:nth-of-type(3):before {
+        content: "Valor";
+    }
+
+    table.agente-paymentsH-table td:nth-of-type(4):before {
+        content: "Saldo";
     }
     /*Transaction table*/
     table.agente-transaction-table td:nth-of-type(1):before {
         content: "Nombres";
     }
+
     table.agente-transaction-table td:nth-of-type(2):before {
         content: "Credito";
     }
+
     table.agente-transaction-table td:nth-of-type(3):before {
         content: "Barrio";
     }
+
     table.agente-transaction-table td:nth-of-type(4):before {
         content: "Hora";
     }
+
     table.agente-transaction-table td:nth-of-type(5):before {
         content: "Tasa";
     }
+
     table.agente-transaction-table td:nth-of-type(6):before {
         content: "Cuotas";
     }
+
     table.agente-transaction-table td:nth-of-type(7):before {
         content: "Valor neto";
     }
+    /*agente-transactionP*/
+    table.agente-transactionP-table td:nth-of-type(1):before {
+        content: "Nombres";
+    }
+
+    table.agente-transactionP-table td:nth-of-type(2):before {
+        content: "Fecha";
+    }
+
+    table.agente-transactionP-table td:nth-of-type(3):before {
+        content: "Credito";
+    }
+
+    table.agente-transactionP-table td:nth-of-type(4):before {
+        content: "Cuota";
+    }
+
+    table.agente-transactionP-table td:nth-of-type(5):before {
+        content: "Saldo";
+    }
+
+    table.agente-transactionP-table td:nth-of-type(6):before {
+        content: "Última cuota";
+    }
+
+    /*Transaction table*/
+    table.agente-transactionG-table td:nth-of-type(1):before {
+        content: "Gasto";
+    }
+
+    table.agente-transactionG-table td:nth-of-type(2):before {
+        content: "Detalle";
+    }
+
+    table.agente-transactionG-table td:nth-of-type(3):before {
+        content: "Valor neto";
+    }
+
     /*supervisor-assign-table table*/
     table.supervisor-assign-table td:nth-of-type(1):before {
         content: "Nombre";
@@ -347,6 +420,7 @@ body {
     table.supervisor-clientes-table td:nth-of-type(5):before {
         content: "Vigentes";
     }
+
     table.supervisor-clientes-table td:nth-of-type(6):before {
         content: "Tipo";
     }
@@ -398,6 +472,7 @@ body {
     table.supervisor-ventas-table td:nth-of-type(6):before {
         content: "Cuotas";
     }
+
     table.supervisor-ventas-table td:nth-of-type(7):before {
         content: "Valor neto";
     }
@@ -437,6 +512,7 @@ body {
     table.supervisor-statistics-table td:nth-of-type(4):before {
         content: "Ciudad";
     }
+
     table.supervisor-statistics-table td:nth-of-type(5):before {
         content: "Accion";
     }
@@ -480,7 +556,32 @@ body {
     table.supervisor-billS-table td:nth-of-type(5):before {
         content: "Categoria";
     }
+
     table.supervisor-billS-table td:nth-of-type(6):before {
+        content: "Agente";
+    }
+    /*agente-g-table*/
+    table.agente-g-table td:nth-of-type(1):before {
+        content: "Cartera";
+    }
+
+    table.agente-g-table td:nth-of-type(2):before {
+        content: "Fecha";
+    }
+
+    table.agente-g-table td:nth-of-type(3):before {
+        content: "Valor";
+    }
+
+    table.agente-g-table td:nth-of-type(4):before {
+        content: "Detalle";
+    }
+
+    table.agente-g-table td:nth-of-type(5):before {
+        content: "Categoria";
+    }
+
+    table.agente-g-table td:nth-of-type(6):before {
         content: "Agente";
     }
 }
