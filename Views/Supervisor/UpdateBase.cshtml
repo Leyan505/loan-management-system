@@ -1,4 +1,4 @@
-﻿@model AgentHasSupervisor
+﻿@model AssignBaseDTO
 
 @{
 }
@@ -7,15 +7,30 @@
     <div class="col-md-12 col-lg-8 offset-lg-2">
         <div class="widget">
             <header class="widget-header">
-                <h4 class="widget-title">Actualizar</h4>
+                <h4 class="widget-title">Asignar Base</h4>
             </header><!-- .widget-header -->
             <hr class="widget-separator">
             <div class="widget-body">
                 <form method="POST" asp-controller="Supervisor" asp-action="UpdateBase">
                     <div class="form-group">
-                        <label class="mb-1">Base:</label>
-                        <input value=@Model.Base class="form-control mb-3" name="Base" type="number">
-                        <input hidden value=@Model.Id name="AgentSupervisorId" />
+                        <label for="name">Nombres:</label>
+                        <input type="text" name="name" value="@Model.users.Name @Model.users.LastName" readonly class="form-control" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Cartera:</label>
+                        <input type="text" name="name" value="@Model.wallet_name" class="form-control" readonly id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="base_number_current">Base actual:</label>
+                        <input type="number" name="base_number_current" value="@Model.base_current" readonly class="form-control" id="base_number_current" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="base_number">Base:</label>
+                        <input hidden value=@Model.users.Id name="AgentSupervisorId" />
+                        <input type="number" name="Base" class="form-control" id="Base" required>
+                        <p class="text-muted">La nueva base se sumara con la base actual</p>
+                    </div>
+                    <div class="mb-3">
                         <div class="d-grid">
                             <button type="submit" class="btn text-white" style="background-color:rgb(47, 50, 144);">Actualizar</button>
                         </div>

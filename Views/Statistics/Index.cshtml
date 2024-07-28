@@ -1,0 +1,38 @@
+﻿@model List<SupervisorHasAgentDTO>
+@{
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table">
+            <h4 class="m-b-lg">Agentes</h4>
+            <table class="table supervisor-statistics-table">
+                <thead>
+                <tr class="visible-lg">
+                    <th>Nombre</th>
+                    <th>Cartera</th>
+                    <th>Pais</th>
+                    <th>Ciudad</th>
+                    <th>Accion</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                @foreach(SupervisorHasAgentDTO client in Model)
+                {
+                    <tr>
+                        <td><span class="value">@client.user.Name @client.user.LastName</span></td>
+                        <td><span class="value">@client.wallet_name</span></td>
+                        <td><span class="value">@client.user.Country</span></td>
+                        <td><span class="value">@client.user.City</span></td>
+                        <td>
+                            <a asp-action="Create" asp-controller="Statistics" asp-route-id_agent="@client.user.Id" class="btn btn-warning btn-xs">Ver</a>
+                        </td>
+                    </tr>
+                        
+                }
+
+                </tbody></table>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

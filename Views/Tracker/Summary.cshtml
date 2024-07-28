@@ -1,0 +1,73 @@
+﻿@model TrackerDTO
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table">
+            <h4 class="m-b-lg">Ventas realizadas</h4>
+            <table class="table supervisor-ventas-table">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Credito</th>
+                        <th>Barrio</th>
+                        <th>Hora</th>
+                        <th>Tasa</th>
+                        <th>Cuotas</th>
+                        <th>Valor neto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(TrackerCreditDTO Cred in Model.Credit)
+                {
+                    <tr>
+                        <td><span class="value">@Cred.user_name @Cred.user_lastName</span></td>
+                        <td><span class="value">@Cred.credit_id</span></td>
+                        <td><span class="value">@Cred.user_province</span></td>
+                        <td><span class="value">@Cred.credit_created_at.Value.ToLocalTime()</span></td>
+                        <td><span class="value">@Cred.credit_utility</span></td>
+                        <td><span class="value">@Cred.credit_paymentNumber</span></td>
+                        <td><span class="value">@Cred.credit_amountNeto</span></td>
+
+                    </tr>
+                }
+
+                </tbody></table>
+            <footer class="widget-footer">
+                <p><b>Total: </b><span class="text-success">@Model.total_credit</span></p>
+            </footer>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table p-lg">
+            <h4 class="m-b-lg">Pagos Recibidos</h4>
+            <table class="table supervisor-pagos-table">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Credito</th>
+                        <th>Cuota</th>
+                        <th>Valor</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(TrackerSummaryDTO sum in Model.Summary)
+                {
+                    <tr>
+                        <td><span class="value">@sum.user_name @sum.users_lastName</span></td>
+                        <td><span class="value">@sum.id_credit</span></td>
+                        <td><span class="value">@sum.number_index</span></td>
+                        <td><span class="value">@sum.amount</span></td>
+                        <td><span class="value">@sum.created_at.Value.ToLocalTime()</span></td>
+                    </tr>
+                }
+
+                </tbody></table>
+            <footer class="widget-footer">
+                <p><b>Total: </b><span class="text-success">@Model.total_summary</span></p>
+            </footer>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

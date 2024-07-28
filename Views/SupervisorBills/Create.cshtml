@@ -1,0 +1,69 @@
+﻿@model SupervisorBillsCreateDTO
+
+
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget">
+            <header class="widget-header">
+                <h4 class="widget-title">Ingresar gastos</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" asp-action="Create" asp-controller="SupervisorBills" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Agente</label>
+                        <select name="id_agent" id="" required class="form-control">
+                            @foreach (Users a in Model.agents)
+                            {
+                                <option value="@a.Id">@a.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Cartera:</label>
+                        <select name="id_wallet" id="" required class="form-control">
+                            @foreach(Wallet w in Model.wallets)
+                            {
+                                <option value="@w.Id">@w.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Tipo de gasto:</label>
+                        <select name="bill" id="" required class="form-control">
+                            @foreach(ListBill l in Model.bills)
+                            {
+                                <option value="@l.Id">@l.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Valor</label>
+                        <input type="number" class="form-control" required id="amount" name="amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Detalle</label>
+                        <textarea name="description" class="form-control" required id="" cols="30" maxlength="100" rows="5"></textarea>
+                    </div>
+                    @if (Model.error != null)
+                    {
+                        @if (Model.error.ShowDescription)
+                        {
+                            <p style="color:red;">@Model.error.description</p>
+                        }
+                    }
+                    <div class="form-group">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btnPrimary text-white">Guardar</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-grid">
+                            <a asp-action="Index" asp-controller="SupervisorBills" class="btn btnPrimary text-white">Consultar</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->

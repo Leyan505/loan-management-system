@@ -1,0 +1,59 @@
+﻿@model CashDTO
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="widget-table">
+            <h4 class="m-b-lg">Cartera</h4>
+            <table class="table supervisor-cash-table">
+                <thead>
+                    <tr class="visible-lg">
+                        <th>Cartera</th>
+                        <th>Detalle</th>
+                        <th>Valor inicial</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(SupervisorHasAgentDTO client in Model.clients)
+                {
+                    <tr>
+                        <td>@client.wallet_name</td>
+                        <td>@client.wallet_createdAt</td>
+                        <td>@client.base_total</td>
+                    </tr>
+                        
+                }
+
+                </tbody></table>
+            <footer class="widget-footer">
+                <p class="text-success"><b>Total: </b> @Model.sum</p>
+            </footer>
+        </div><!-- .widget -->
+
+    </div>
+</div><!-- .row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table">
+            <h4 class="m-b-lg">Historial Caja</h4>
+            <table class="table supervisor-History-table">
+                <thead>
+                    <tr class="visible-lg">
+                        <th>Fecha</th>
+                        <th>Saldo Base</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(CloseDay r in Model.report)
+                {
+                    <tr>
+                        <td>@r.Created_at</td>
+                        <td>@r.Total</td>
+                    </tr>
+                        
+                }
+
+                </tbody></table>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

@@ -18,8 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Views\Agent\" />
-    <Folder Include="Views\Supervisor\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,38 @@
+﻿@model List<CloseDTO>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table">
+            <h4 class="m-b-lg">Agentes</h4>
+            <table class="table supervisor-close-table">
+                <thead>
+                    <tr class="visible-lg">
+                        <th>Nombre</th>
+                        <th>Cartera</th>
+                        <th>Fecha</th>
+                        <th>Ciudad</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(CloseDTO client in Model)
+                {
+                    @if(client.Show)
+                    {
+                        <tr>
+                            <td><span class="value">@client.users.Name @client.users.LastName</span></td>
+                            <td><span class="value">@client.wallet_name</span></td>
+                            <td><span class="value">@DateTime.Now.Date.ToShortDateString()</span></td>
+                            <td><span class="value">@client.users.City</span></td>
+                            <td>
+                                <a asp-action="Close" asp-controller="Close" asp-route-id="@client.SupervisorHasAgent.IdAgent" class="btn btn-danger btn-xs">Cerrar</a>
+                            </td>
+                        </tr>
+                            
+                    }
+                }
+
+                </tbody></table>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

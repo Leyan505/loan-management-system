@@ -68,17 +68,12 @@ div.LoginBox form {
     align-items: center;
 }
 
-div.LoginBox form input{
-    width: 80%;
-    padding: 10px 0px;
-    border: none;
-    border-bottom: 1px solid black;
-    margin-bottom: 32px;
-}
+    div.LoginBox form input:not(.form-check-input) {
+        width: 80%;
+        padding: .375rem .75rem;
+        margin-bottom: 32px;
+    }
 
-div.LoginBox form div input[type=checkbox]{
-   width: unset;
-}
 
 div.remember{
     margin-left: -100px;
@@ -87,7 +82,7 @@ div.remember{
 button {
     width: 50%;
     text-align: center;
-    background-color: rgba(47, 50, 144);
+    background-color: rgba(47, 50, 144) !important;
     margin-bottom: 32px;
     color: white;
     padding: 5px;

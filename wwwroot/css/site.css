@@ -12,13 +12,17 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+.btnPrimary {
+    background-color:rgb(47, 50, 144);
+}
 html {
   position: relative;
   min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: #edf0f5;
 }
 
 #logout {
@@ -32,8 +36,8 @@ body {
 
 .widget {
     box-shadow: 0 0px 15px #4343430a !important;
-    border: solid 2px black;
-    border-bottom: solid 4px black;
+    /*border: solid 2px #807e7e;*/
+    border-bottom: solid 3px #807e7e;
     background-color: #fff;
     border-radius: 5px;
     margin-bottom: 1.5rem;
@@ -52,11 +56,6 @@ body {
     float: left;
 }
 
-h3.widget-title {
-    font-size: 20px;
-    margin-bottom: 16px;
-    font-weight: 500;
-}
 
 .widget-title {
     font-size: 1rem;
@@ -79,15 +78,40 @@ h3.widget-title {
     padding: 1rem;
 }
 
+.widget-header:before, .widget-header:after,
+.widget-footer:before,
+.widget-footer:after,
+.widget-header:before,
+.widget-header:after,
+.widget-footer:before,
+.widget-footer:after {
+    content: " ";
+    display: table;
+}
+
+.widget-header:after,
+.widget-footer:after,
+.widget-header:after,
+.widget-footer:after {
+    clear: both;
+}
+
+.widget-footer {
+    background: #FFC107;
+    color: white;
+    font-size: 20px;
+    padding: 5px 15px 0 15px;
+}
+
 .widget-separator {
     margin: 0 16px;
 }
 
 .form-group{
-    margin-bottom:24px;
+    margin-bottom:1rem;
 }
 
-@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+@media only screen and (max-width: 760px), (min-device-width: 760px) and (max-device-width: 1024px) {
 
     /* Force table to not be like tables anymore */
     table, thead, tbody, th, td, tr {
@@ -112,6 +136,10 @@ h3.widget-title {
         border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50% !important;
+        height: 40px;
+    }
+    td:last-child{
+        height: 100px;
     }
 
     td:before {
@@ -123,37 +151,389 @@ h3.widget-title {
         width: 45%;
         padding-right: 10px;
         white-space: nowrap;
+        font-weight:500;
+    }
+    td {
+        text-align: left !important;
     }
 
+    .widget-table{
+        padding: 10px !important;
+        width: 93% !important;
+    }
         /*
 	Label the data
 	*/
-        table.admin-table td:nth-of-type(1):before {
-            content: "First Name";
-        }
+    /*Manage users*/
+    table.users-table td:nth-of-type(1):before {
+        content: "Usuario";
+    }
 
-        td:nth-of-type(2):before {
-            content: "Last Name";
-        }
+    table.users-table td:nth-of-type(2):before {
+        content: "Nombre";
+    }
 
-        td:nth-of-type(3):before {
-            content: "Job Title";
-        }
+    table.users-table td:nth-of-type(3):before {
+        content: "Nivel";
+    }
+    table.users-table td:nth-of-type(4):before {
+        content: "Cartera";
+    }
+    table.users-table td:nth-of-type(5):before {
+        content: "Supervisor";
+    }
+    table.users-table td:nth-of-type(6):before {
+        content: "Acciones";
+    }
+
+
+    /*Manage Wallets*/
+    table.wallets-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+    table.wallets-table td:nth-of-type(2):before {
+        content: "Ciudad";
+    }
+
+    table.wallets-table td:nth-of-type(3):before {
+        content: "Creada";
+    }
+
+    table.wallets-table td:nth-of-type(4):before {
+        content: "Acciones";
+    }
+
+    /*Show Clients*/
+    table.client-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.client-table td:nth-of-type(2):before {
+        content: "Apellidos";
+    }
+
+    table.client-table td:nth-of-type(3):before {
+        content: "Barrio";
+    }
+
+    table.client-table td:nth-of-type(4):before {
+        content: "Total";
+    }
+    table.client-table td:nth-of-type(5):before {
+        content: "Pagados";
+    }
+    table.client-table td:nth-of-type(6):before {
+        content: "Vigentes";
+    }
+    table.client-table td:nth-of-type(7):before {
+        content: "Monto Prestado";
+    }
+    table.client-table td:nth-of-type(8):before {
+        content: "Monto Restante";
+    }
+    table.client-table td:nth-of-type(9):before {
+        content: "Tipo";
+    }
+    table.client-table td:nth-of-type(10):before {
+        content: "Accion";
+    }
+
+    /*Client Payments*/
+    table.agente-payments-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.agente-payments-table td:nth-of-type(2):before {
+        content: "Credito";
+    }
+
+    table.agente-payments-table td:nth-of-type(3):before {
+        content: "Valor";
+    }
+
+    table.agente-payments-table td:nth-of-type(4):before {
+        content: "Saldo";
+    }
+
+    table.agente-payments-table td:nth-of-type(5):before {
+        content: "Cuota";
+    }
+    table.agente-payments-table td:nth-of-type(6):before {
+        content: "Accion";
+    }
+    /*Transaction table*/
+    table.agente-transaction-table td:nth-of-type(1):before {
+        content: "Nombres";
+    }
+    table.agente-transaction-table td:nth-of-type(2):before {
+        content: "Credito";
+    }
+    table.agente-transaction-table td:nth-of-type(3):before {
+        content: "Barrio";
+    }
+    table.agente-transaction-table td:nth-of-type(4):before {
+        content: "Hora";
+    }
+    table.agente-transaction-table td:nth-of-type(5):before {
+        content: "Tasa";
+    }
+    table.agente-transaction-table td:nth-of-type(6):before {
+        content: "Cuotas";
+    }
+    table.agente-transaction-table td:nth-of-type(7):before {
+        content: "Valor neto";
+    }
+    /*supervisor-assign-table table*/
+    table.supervisor-assign-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.supervisor-assign-table td:nth-of-type(2):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-assign-table td:nth-of-type(3):before {
+        content: "Pais";
+    }
+
+    table.supervisor-assign-table td:nth-of-type(4):before {
+        content: "Ciudad";
+    }
+
+    table.supervisor-assign-table td:nth-of-type(5):before {
+        content: "Base";
+    }
+
+    table.supervisor-assign-table td:nth-of-type(6):before {
+        content: "Accion";
+    }
+    /*supervisor-close-table*/
+    table.supervisor-close-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.supervisor-close-table td:nth-of-type(2):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-close-table td:nth-of-type(3):before {
+        content: "Fecha";
+    }
+
+    table.supervisor-close-table td:nth-of-type(4):before {
+        content: "Ciudad";
+    }
+
+    table.supervisor-close-table td:nth-of-type(5):before {
+        content: "Accion";
+    }
+    /*supervisor-clientes-table*/
+    table.supervisor-clientes-table td:nth-of-type(1):before {
+        content: "Nombres";
+    }
+
+    table.supervisor-clientes-table td:nth-of-type(2):before {
+        content: "Barrio";
+    }
+
+    table.supervisor-clientes-table td:nth-of-type(3):before {
+        content: "Total";
+    }
+
+    table.supervisor-clientes-table td:nth-of-type(4):before {
+        content: "Pagados";
+    }
+
+    table.supervisor-clientes-table td:nth-of-type(5):before {
+        content: "Vigentes";
+    }
+    table.supervisor-clientes-table td:nth-of-type(6):before {
+        content: "Tipo";
+    }
+    /*supervisor-tracker-table*/
+    table.supervisor-tracker-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.supervisor-tracker-table td:nth-of-type(2):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-tracker-table td:nth-of-type(3):before {
+        content: "Pais";
+    }
+
+    table.supervisor-tracker-table td:nth-of-type(4):before {
+        content: "Ciudad";
+    }
+
+    table.supervisor-tracker-table td:nth-of-type(5):before {
+        content: "Accion";
+    }
+
+    table.supervisor-tracker-table td:nth-of-type(6):before {
+        content: "Tipo";
+    }
+    /*supervisor-ventas-table*/
+    table.supervisor-ventas-table td:nth-of-type(1):before {
+        content: "Nombres";
+    }
+
+    table.supervisor-ventas-table td:nth-of-type(2):before {
+        content: "Credito";
+    }
+
+    table.supervisor-ventas-table td:nth-of-type(3):before {
+        content: "Barrio";
+    }
+
+    table.supervisor-ventas-table td:nth-of-type(4):before {
+        content: "Hora";
+    }
+
+    table.supervisor-ventas-table td:nth-of-type(5):before {
+        content: "Tasa";
+    }
+
+    table.supervisor-ventas-table td:nth-of-type(6):before {
+        content: "Cuotas";
+    }
+    table.supervisor-ventas-table td:nth-of-type(7):before {
+        content: "Valor neto";
+    }
+    /*supervisor-pagos-table*/
+    table.supervisor-pagos-table td:nth-of-type(1):before {
+        content: "Nombres";
+    }
+
+    table.supervisor-pagos-table td:nth-of-type(2):before {
+        content: "Credito";
+    }
+
+    table.supervisor-pagos-table td:nth-of-type(3):before {
+        content: "Cuota";
+    }
+
+    table.supervisor-pagos-table td:nth-of-type(4):before {
+        content: "Valor";
+    }
+
+    table.supervisor-pagos-table td:nth-of-type(5):before {
+        content: "Hora";
+    }
+    /*supervisor-statistics-table*/
+    table.supervisor-statistics-table td:nth-of-type(1):before {
+        content: "Nombre";
+    }
+
+    table.supervisor-statistics-table td:nth-of-type(2):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-statistics-table td:nth-of-type(3):before {
+        content: "Pais";
+    }
+
+    table.supervisor-statistics-table td:nth-of-type(4):before {
+        content: "Ciudad";
+    }
+    table.supervisor-statistics-table td:nth-of-type(5):before {
+        content: "Accion";
+    }
+    /*supervisor-cash-table*/
+    table.supervisor-cash-table td:nth-of-type(1):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-cash-table td:nth-of-type(2):before {
+        content: "Detalle";
+    }
+
+    table.supervisor-cash-table td:nth-of-type(3):before {
+        content: "Valor inicial";
+    }
+    /*supervisor-History-table*/
+    table.supervisor-History-table td:nth-of-type(1):before {
+        content: "Fecha";
+    }
+
+    table.supervisor-History-table td:nth-of-type(2):before {
+        content: "Saldo Base";
+    }
+    /*supervisor-billS-table*/
+    table.supervisor-billS-table td:nth-of-type(1):before {
+        content: "Fecha";
+    }
+
+    table.supervisor-billS-table td:nth-of-type(2):before {
+        content: "Cartera";
+    }
+
+    table.supervisor-billS-table td:nth-of-type(3):before {
+        content: "Valor";
+    }
+
+    table.supervisor-billS-table td:nth-of-type(4):before {
+        content: "Detalle";
+    }
+
+    table.supervisor-billS-table td:nth-of-type(5):before {
+        content: "Categoria";
+    }
+    table.supervisor-billS-table td:nth-of-type(6):before {
+        content: "Agente";
+    }
 }
 
 .widget-table {
-    padding: 11px;
-    width: 96%;
+    padding: 30px;
+    width: 100%;
     margin: auto;
     box-shadow: 0 0px 15px #4343430a !important;
-    border: solid 2px #807e7e;
     border-bottom: solid 4px #807e7e;
     background-color: #fff;
     border-radius: 5px;
     margin-bottom: 1.5rem;
+    overflow-x: auto;
 }
+
 
 table button{
     margin-top: .25rem;
 }
 
+.badge-info {
+    background-color: #35b8e0;
+    color: #fff;
+}
+
+.map-google {
+    height: 20rem;
+    width: 100%;
+    background: lightgray;
+}
+
+/* statistics widgets */
+.stats-widget {
+    padding: 6px;
+    width: 100%;
+    margin: auto;
+    box-shadow: 0 0px 15px #4343430a !important;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    /*border-bottom: solid 4px #807e7e;*/
+}
+
+.stats-widget .big-icon {
+    color: #ccce;
+    font-size: 40px;
+}
+
+.stats-widget .widget-footer {
+    padding: 8px 16px;
+}
+
+.stats-widget .widget-footer small {
+    color: #ffffff;
+}

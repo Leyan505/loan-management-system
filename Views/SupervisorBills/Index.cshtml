@@ -1,0 +1,60 @@
+﻿@model BillsDTO
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget p-4">
+            <h4 class="m-b-lg">Gastos</h4>
+            <form class="d-flex flex-row align-items-center flex-wrap gap-3" asp-action="Index" asp-controller="SupervisorBills" method="GET">
+                <div class="form-group hidden">
+                    <label for="nit_number"> Fecha Inicial:</label>
+                    <input type="date" name="date_start" class="form-control" id="date_start">
+                </div>
+                <div class="form-group hidden">
+                    <label for="nit_number"> Fecha Final:</label>
+                    <input type="date" name="date_end" class="form-control" id="date_end">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Categoria:</label>
+                    <select name="category" required id="" class="form-control">
+                        @foreach (ListBill category in Model.list_categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <button class="btn btn-info hidden" type="submit">Buscar</button>
+            </form>
+            <br class="clearfix">
+            <table class="table supervisor-billS-table">
+                <thead>
+                    <tr class="visible-lg">
+                        <th>Fecha</th>
+                        <th>Cartera</th>
+                        <th>Valor</th>
+                        <th>Detalle</th>
+                        <th>Categoría</th>
+                        <th>Agente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BillsDTO client in Model.clients)
+                    {
+                        <tr>
+                            <td>@client.bill.Created_at.ToLocalTime()</td>
+                            <td>@client.wallet_name</td>
+                            <td>@client.bill.Amount</td>
+                            <td>@client.bill.Description</td>
+                            <td>@client.category_name</td>
+                            <td>@client.user_name</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            <footer class="widget-footer">
+                <p><b>Total: </b><span class="text-success">@Model.total</span></p>
+            </footer>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

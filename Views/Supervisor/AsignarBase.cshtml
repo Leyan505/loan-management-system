@@ -1,4 +1,4 @@
-﻿@model List<AgentHasSupervisorDTO>
+﻿@model List<SupervisorHasAgentDTO>
 @{
 }
 
@@ -8,7 +8,7 @@
         <h4 class="mb-2" style=" font-weight:400;">Usuarios</h4>
         <hr class="mb-4" />
         <div class="col-md-12 col-sm-12">
-            <table class="table table-striped admin-table">
+            <table class="table table-striped supervisor-assign-table">
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
@@ -22,16 +22,16 @@
                 <tbody>
         @if (Model != null)
         {
-            @foreach (AgentHasSupervisorDTO agentSupervisor in Model)
+            @foreach (SupervisorHasAgentDTO agentSupervisor in Model)
             {
                     <tr>
-                        <td>@agentSupervisor.AgentName</td>
-                        <td>@agentSupervisor.WalletName</td>
-                        <td>Nicaragua</td>
-                        <td>@agentSupervisor.City</td>
-                        <td>@agentSupervisor.Base</td>
+                        <td>@agentSupervisor.user.Name</td>
+                        <td>@agentSupervisor.wallet_name</td>
+                        <td>@agentSupervisor.user.Country</td>
+                        <td>@agentSupervisor.user.City</td>
+                        <td>@agentSupervisor.base_total</td>
                         <td>
-                            <a class="btn btn-primary" asp-controller="Supervisor" asp-action="UpdateBase" asp-route-Id="@agentSupervisor.Id">Actualizar base</a>
+                            <a class="btn btn-primary" asp-controller="Supervisor" asp-action="UpdateBase" asp-route-Id="@agentSupervisor.user.Id">Actualizar base</a>
                         </td>
                     </tr>
             }

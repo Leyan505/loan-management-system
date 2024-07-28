@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PrestamosCreciendo.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="//cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
     <script src="https://kit.fontawesome.com/ccb427f34c.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -25,6 +31,7 @@
         </nav>
     </header>
     <div class="container">
+        
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -37,7 +44,35 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetValue(typeof(string), "GOOGLE_KEY")&libraries=places"></script>
+    <script>google.maps.event.addDomListener(window, 'load', initialize);</script>
+    <script>
+        $('table').not(".agente-g-table").not(".supervisor-ventas-table").not(".supervisor-tracker-table")
+            .not(".supervisor-pagos-table").not(".supervisor-statistics-table").not(".supervisor-assign-table").not(".supervisor-close-table").
+            not(".supervisor-clientes-table").not(".supervisor-cash-table").DataTable(
+            {
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    zeroRecords: "No hay registros",
+                    info: "",
+                    infoEmpty: "No hay registros",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    search: "Buscar:",
+                    paginate: {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                    order: [[1, 'asc']]
+
+                }
+            }
+        );
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

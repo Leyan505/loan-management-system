@@ -20,5 +20,13 @@ namespace PrestamosCreciendo.Data
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<SupervisorHasAgent> AgentSupervisor { get; set; }
+        public DbSet<Credit> Credit {  get; set; }
+        public DbSet<AgentHasClient> AgentHasClient { get; set; }
+        public DbSet<Summary> Summary { get; set; }
+        public DbSet<CloseDay> CloseDay { get; set; }
+        public DbSet<Bills> Bills { get; set; }
+        public DbSet<ListBill> ListBills { get; set; }
+        public DbSet<Countries> Countries { get; set; }
     }
 }
