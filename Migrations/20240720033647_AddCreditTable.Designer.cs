@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrestamosCreciendo.Data;
@@ -11,9 +12,11 @@ using PrestamosCreciendo.Data;
 namespace PrestamosCreciendo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240720033647_AddCreditTable")]
+    partial class AddCreditTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace PrestamosCreciendo.Migrations
                     b.ToTable("AgentHasClient");
                 });
 
-            modelBuilder.Entity("PrestamosCreciendo.Models.Bills", b =>
+            modelBuilder.Entity("PrestamosCreciendo.Models.AgentHasSupervisor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,76 +55,24 @@ namespace PrestamosCreciendo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<float>("Amount")
+                    b.Property<float>("Base")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Id_agent")
+                    b.Property<int>("IdAgent")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id_wallet")
+                    b.Property<int>("IdSupervisor")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("IdWallet")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Bills");
-                });
-
-            modelBuilder.Entity("PrestamosCreciendo.Models.CloseDay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("Base_before")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<float>("From_number")
-                        .HasColumnType("real");
-
-                    b.Property<int>("Id_agent")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id_supervisor")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("Total")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CloseDay");
-                });
-
-            modelBuilder.Entity("PrestamosCreciendo.Models.Countries", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
+                    b.ToTable("AgentSupervisor");
                 });
 
             modelBuilder.Entity("PrestamosCreciendo.Models.Credit", b =>
@@ -162,79 +113,6 @@ namespace PrestamosCreciendo.Migrations
                     b.ToTable("Credit");
                 });
 
-            modelBuilder.Entity("PrestamosCreciendo.Models.ListBill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ListBills");
-                });
-
-            modelBuilder.Entity("PrestamosCreciendo.Models.Summary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Id_agent")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id_credit")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Number_index")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Summary");
-                });
-
-            modelBuilder.Entity("PrestamosCreciendo.Models.SupervisorHasAgent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("Base")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("IdAgent")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("IdSupervisor")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("IdWallet")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AgentSupervisor");
-                });
-
             modelBuilder.Entity("PrestamosCreciendo.Models.Users", b =>
                 {
                     b.Property<int>("Id")
@@ -242,9 +120,6 @@ namespace PrestamosCreciendo.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("ActiveUser")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
@@ -279,16 +154,6 @@ namespace PrestamosCreciendo.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Province")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("lat")
-                        .HasColumnType("text");
-
-                    b.Property<string>("lng")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

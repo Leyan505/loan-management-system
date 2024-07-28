@@ -12,8 +12,8 @@ using PrestamosCreciendo.Data;
 namespace PrestamosCreciendo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240713224245_CreateUsersWalletsTables")]
-    partial class CreateUsersWalletsTables
+    [Migration("20240719223048_AddFieldsToUsers")]
+    partial class AddFieldsToUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,34 @@ namespace PrestamosCreciendo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("PrestamosCreciendo.Models.AgentHasSupervisor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("Base")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("Created_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdAgent")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdSupervisor")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdWallet")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AgentSupervisor");
+                });
 
             modelBuilder.Entity("PrestamosCreciendo.Models.Users", b =>
                 {
@@ -36,11 +64,16 @@ namespace PrestamosCreciendo.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
-                    b.Property<int?>("City")
-                        .HasColumnType("integer");
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
 
                     b.Property<string>("Level")
@@ -51,12 +84,17 @@ namespace PrestamosCreciendo.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Nit")
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("Phone")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

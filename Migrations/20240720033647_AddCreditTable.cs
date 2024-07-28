@@ -7,44 +7,44 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PrestamosCreciendo.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateUsersWalletsTables : Migration
+    public partial class AddCreditTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "AgentHasClient",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Level = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<int>(type: "integer", nullable: true),
-                    Phone = table.Column<int>(type: "integer", nullable: true)
+                    Id_agent = table.Column<int>(type: "integer", nullable: false),
+                    Id_client = table.Column<int>(type: "integer", nullable: false),
+                    Id_wallet = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_AgentHasClient", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Wallets",
+                name: "Credit",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Country = table.Column<int>(type: "integer", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false)
+                    Amount_neto = table.Column<float>(type: "real", nullable: false),
+                    Order_list = table.Column<int>(type: "integer", nullable: false),
+                    Id_user = table.Column<int>(type: "integer", nullable: false),
+                    Id_agent = table.Column<int>(type: "integer", nullable: false),
+                    Payment_number = table.Column<int>(type: "integer", nullable: false),
+                    Utility = table.Column<float>(type: "real", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Wallets", x => x.Id);
+                    table.PrimaryKey("PK_Credit", x => x.Id);
                 });
         }
 
@@ -52,10 +52,10 @@ namespace PrestamosCreciendo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "AgentHasClient");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
+                name: "Credit");
         }
     }
 }
