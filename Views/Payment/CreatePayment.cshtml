@@ -1,0 +1,66 @@
+﻿@model PaymentDTO
+@{
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget">
+            <header class="widget-header">
+                <h4 class="widget-title">Abono de cuota</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" class="payment-create" asp-controller="payment" asp-action="NewPayment" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Nombres:</label>
+                        <input type="text" name="name" value="@Model.name @Model.last_name" readonly class="form-control" id="name">
+                    </div>
+                    <input type="hidden" name="rev" id="rev" value="true">
+                    <div class="form-group">
+                        <label for="address">Número de credito:</label>
+                        <input type="text" name="credit_id" value="@Model.credit_id" readonly class="form-control" id="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Valor de venta:</label>
+                        <input type="text" name="province" value="@Model.amount_neto en @Model.payment_number cuotas" readonly class="form-control" id="province">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Pagado:</label>
+                        <input type="tel" name="phone" value="@Model.positive" readonly class="form-control" id="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Saldo:</label>
+                        <input type="tel" name="phone" value="@Model.rest" readonly class="form-control" id="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Valor de cuota:</label>
+                        <input type="text" readonly value="@Model.payment_quote" class="form-control" id="amount1">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Cuotas pagadas:</label>
+                        <input type="text" readonly value="@Model.payment_done" class="form-control" id="amount2">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Valor de abono:</label>
+                        <input type="number" step="any" min="1" max="@Model.rest" value="@Model.payment_quote" name="amount" class="form-control" id="amount">
+                    </div>
+                    <div class="form-group">
+                        @if(Model.rest < 1)
+                        {
+                            <div class="d-grid col-12">
+                                <button type="submit" disabled class="btn btn-success btn-block btn-md">Guardar pago</button>
+                            </div>
+
+                        }
+                        else{
+                            <div class="d-grid col-12">
+                                <button type="submit" style="background-color:rgb(47, 50, 144);" class="btn btn-block btn-md text-white">Guardar pago</button>
+                            </div>
+                        }
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->
+</div><!-- .row -->

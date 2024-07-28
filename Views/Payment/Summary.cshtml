@@ -1,0 +1,117 @@
+﻿@model SummaryDTO
+@{
+}
+<div class="row clearfix">
+    <div class="col-md-12 mb-2">
+        <div class=" p-lg text-end">
+            <a type="button" asp-controller="Agente" asp-action="ShowClients" class="btn btn-dark"><i class="fa fa-users"></i> Mostar clientes</a>
+            <a type="button" href="{{url('route')}}" class="btn btn-primary"><i class="fa fa-car"></i> Continuar ruta</a>
+        </div><!-- .widget -->
+    </div>
+    @if (Model.show != null)
+    {
+        @if (Model.show.Equals("last"))
+        {
+            <div class="col-md-9 col-7 float-end">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title">@Model.user.Name @Model.user.LastName</h4>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">Credito: <span class="text-purple">@Model.credit_data.Id</span></li>
+                        <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span></li>
+                        <li class="list-group-item">Tasa de interés: <span class="text-purple">@Model.credit_data.Utility%</span></li>
+                        <li class="list-group-item">Cuotas pactadas: <span class="text-purple">@Model.credit_data.Payment_number</span></li>
+                        <li class="list-group-item">Valor cuota: <span class="text-purple">@Model.credit_data.payment_amount</span></li>
+                        <li class="list-group-item">Capital: <span class="text-purple">@Model.credit_data.Amount_neto</span></li>
+                        <li class="list-group-item">Intereses: <span class="text-purple">@Model.credit_data.utility_amount</span></li>
+                        <li class="list-group-item">Total: <span class="text-purple">@Model.credit_data.total</span></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3 col-5 float-start">
+                <div class="stats-widget stats-widget">
+                    <div class="widget-body clearfix">
+                        <div class="float-start">
+                            <small class="text-color">Pago realizado</small>
+                            <h3 class="widget-title text-success">@Model.recent</h3>
+                            <small class="text-color">Saldo</small>
+                            <h3 class="widget-title text-primary">@Model.rest</h3>
+                        </div>
+                        <span class="float-end big-icon watermark"><i class="fa fa-money"></i></span>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else{
+        <div class="col-12 float-end">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="card-title">@Model.user.Name @Model.user.LastName</h4>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">Credito: <span class="text-purple">@Model.credit_data.Id</span></li>
+                    <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span></li>
+                    <li class="list-group-item">Tasa de interés: <span class="text-purple">@Model.credit_data.Utility%</span></li>
+                    <li class="list-group-item">Cuotas pactadas: <span class="text-purple">@Model.credit_data.Payment_number</span></li>
+                    <li class="list-group-item">Valor cuota: <span class="text-purple">@Model.credit_data.payment_amount</span></li>
+                    <li class="list-group-item">Capital: <span class="text-purple">@Model.credit_data.Amount_neto</span></li>
+                    <li class="list-group-item">Intereses: <span class="text-purple">@Model.credit_data.utility_amount</span></li>
+                    <li class="list-group-item">Total: <span class="text-purple">@Model.credit_data.total</span></li>
+
+                </ul>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="stats-widget p-lg">
+            <h4 class="m-b-lg">Historial</h4>
+            <table class="table agente-paymentsH-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>No</th>
+                        <th>Valor</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(SummaryClients client in @Model.clients)
+                {
+                    <tr>
+                        <td>@client.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@client.Number_index</td>
+                        <td>@client.Amount</td>
+                        <td>@client.rest</td>
+                    </tr>        
+                }
+
+                </tbody></table>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="stats-widget p-lg">
+            <h4 class="m-b-lg">Ultimos creditos</h4>
+            @if(Model.other_credit != null)
+            {
+                 @foreach(Credit other in @Model.other_credit)
+                 {
+                    @if (@Model.credit_data.Id != other.Id)
+                    {
+                        <a asp-controller="payment" asp-action="summary" asp-route-id_credit="@other.Id" class="btn btn-info">@other.Id</a>
+                    }
+                    
+                 }
+            }
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

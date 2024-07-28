@@ -2,8 +2,9 @@
 {
     public class AgentsDTO
     {
-        public List<Users>? AgentsList;
-        public List<Wallet>? WalletsList;
+        public List<UsersAssignDTO>? AgentsList;
+        public List<WalletAssignDTO>? WalletsList;
         public int? SupervisorId;
+        public ErrorViewModel? Error { get; set; }
     }
 }

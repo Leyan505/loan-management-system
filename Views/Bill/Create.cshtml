@@ -1,0 +1,37 @@
+﻿@model List<ListBill>
+
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget">
+            <header class="widget-header">
+                <h4 class="widget-title">Gasto</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" asp-action="Create" asp-controller="Bill" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="type_bill"> Tipo de gasto:</label>
+                        <select name="type_bill" class="form-control" id="type_bill">
+                            @foreach(ListBill bill in Model){
+                                <option value="@bill.Id">@bill.Name</option>
+                            }
+                           
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount"> Valor:</label>
+                        <input type="number" min="1" placeholder="1" name="amount"  class="form-control" id="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Detalle</label>
+                        <textarea name="description" id="description" class="form-control" id="" maxlength="100" cols="30" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-md text-white" style="background-color:rgb(47, 50, 144);">Guardar</button>
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->
+</div><!-- .row -->

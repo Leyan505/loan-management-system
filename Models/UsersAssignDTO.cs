@@ -1,6 +1,6 @@
 ﻿namespace PrestamosCreciendo.Models
 {
-    public class UsersList
+    public class UsersAssignDTO
     {
         public int Id { get; set; }
         public required string Name { get; set; }
@@ -17,8 +17,6 @@
         public string? lng { get; set; }
         public string? lat { get; set; }
         public string Status { get; set; } = "good";
-        public string? SupervisorName { get; set; }
-        public string? WalletName { get; set; }
-        public bool ActiveUser { get; set; } = true;
+        public bool ocuped { get; set; }
     }
 }

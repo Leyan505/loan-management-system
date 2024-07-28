@@ -1,0 +1,55 @@
+﻿@model UsersDTO
+@{
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-8 offset-lg-2">
+        <div class="widget-table">
+            <header class="widget-header">
+                <h4 class="widget-title">Datos del cliente</h4>
+            </header><!-- .widget-header -->
+            <hr class="widget-separator">
+            <div class="widget-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="nit_number">Nº Identificacion:</label>
+                        <input type="text" readonly value="@Model.Nit" class="form-control" id="nit_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Nombres:</label>
+                        <input type="text" name="name" readonly value="@Model.Name" class="form-control" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Apellidos:</label>
+                        <input type="text" name="last_name" readonly value="@Model.LastName" class="form-control" id="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Direccion:</label>
+                        <input type="text" name="address" readonly value="@Model.Address" class="form-control" id="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Barrio:</label>
+                        <input type="text" name="province" readonly value="@Model.Province" class="form-control" id="province" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Teléfono:</label>
+                        <input type="tel" name="phone" readonly value="@Model.Phone" class="form-control" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        @if (Model.Status == "good")
+                        {
+                            <input type="tel" name="phone" readonly value = "Bueno" class="form-control  text-success" id="phone" required>
+
+                        }
+                        else
+                        {
+                            <input type="tel" name="phone" readonly value="Malo" class="form-control  text-danger" id="phone" required>
+                        }
+                    </div>
+                </form>
+
+            </div><!-- .widget-body -->
+        </div><!-- .widget -->
+    </div><!-- END column -->
+</div><!-- .row -->

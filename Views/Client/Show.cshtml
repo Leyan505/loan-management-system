@@ -1,0 +1,48 @@
+﻿@model List<ClientDTO>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="widget-table p-lg">
+            <h4 class="m-b-lg">Clientes</h4>
+            <table class="table supervisor-clientes-table">
+
+                <thead class="visible-lg">
+                <tr>
+                    <th>Nombres</th>
+                    <th>Barrio</th>
+                    <th>Total</th>
+                    <th>Pagados</th>
+                    <th>Vigentes</th>
+                    <th>Tipo</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach(ClientDTO client in Model)
+                {
+                    <tr>
+                        <td>@client.name @client.last_name</td>
+                            <td>@client.province</td>
+                            <td>@client.total_credit</td>
+                            <td>@client.closed</td>
+                            <td>@client.inprogress</td>
+                        <td>
+                            @if (client.status.Equals("good"))
+                            {
+                                <span class="badge-info badge">BUENO</span>
+                            }
+                            else if(client.status.Equals("bad")) 
+                            {
+                                <span class="badge-danger badge">MALO</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="Client" asp-route-id="@client.Id" class="btn btn-warning btn-xs">Editar</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div><!-- .widget -->
+    </div>
+</div><!-- .row -->

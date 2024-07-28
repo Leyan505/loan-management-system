@@ -12,7 +12,7 @@ namespace PrestamosCreciendo.Models
         {
             using (var context = new AppDbContext(configuration))
             {
-                // Look for any movies.
+                // Look for any users.
                 if (context.Users.Any())
                 {
                     return;   // DB has been seeded
@@ -37,10 +37,12 @@ namespace PrestamosCreciendo.Models
                         Name = "agente",
                         Email = "agente@agente.com",
                         Password = "1234",
-                        Level = "agente"
+                        Level = "agente",
+                        Country = "Nicaragua",
+                        City = "Managua"
                     }
                 );
-                // Look for any movies.
+                // Look for any wallets.
                 if (context.Wallets.Any())
                 {
                     return;   // DB has been seeded
@@ -49,14 +51,62 @@ namespace PrestamosCreciendo.Models
                     new Wallet
                     {
                         Name = "caja principal",
-                        Country = 0,
+                        Country = 1,
                         City = "Managua"
                     },
                     new Wallet
                     {
                         Name = "Caja secundaria",
-                        Country = 0,
+                        Country = 1,
                         City = "Managua"
+                    }
+                );
+                context.SaveChanges();
+
+                // Look for any wallets.
+                if (context.AgentSupervisor.Any())
+                {
+                    return;   // DB has been seeded
+                }
+                context.AgentSupervisor.AddRange(
+                    new SupervisorHasAgent
+                    {
+                        IdAgent = 3,
+                        IdSupervisor = 2,
+                        IdWallet = 1,
+                        Base = 10000
+                    }
+                );
+                context.SaveChanges();
+
+                if (context.ListBills.Any())
+                {
+                    return;   // DB has been seeded
+                }
+                context.ListBills.AddRange(
+                    new ListBill
+                    {
+                        Name = "Combustible",
+                    },
+                    new ListBill
+                    {
+                        Name = "Comida",
+                    },
+                    new ListBill
+                    {
+                        Name = "Transporte",
+                    }
+                );
+                context.SaveChanges();
+
+                if (context.Countries.Any())
+                {
+                    return;   // DB has been seeded
+                }
+                context.Countries.AddRange(
+                    new Countries
+                    {
+                        Name = "Nicaragua",
                     }
                 );
                 context.SaveChanges();
