@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
@@ -36,11 +35,11 @@ namespace PrestamosCreciendo.Controllers
 
             if (date_start != null && date_end != null)
             {
-                DateTime date_startGreater = date_start.Value.AddDays(1);
-                DateTime date_endSooner = date_end.Value.AddDays(-1);
+                DateTime date_endLater = date_start.Value.AddDays(1);
+                DateTime date_StartSooner = date_end.Value.AddDays(-1);
                 sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date >= date_start.Value.Date
                 && x.Created_at.Date <= date_end.Value.Date;
-                materializedBills = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner).ToList();
+                materializedBills = _context.Bills.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_StartSooner).ToList();
                 foreach (var Item in materializedBills)
                 {
                     Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -67,7 +66,7 @@ namespace PrestamosCreciendo.Controllers
                                   (bill3, users) => new { bill3, users })
                                   .Select(result => new BillsDTO()
                                   {
-                                      bill = result.bill3.bill2.bill1,
+                                      bills = result.bill3.bill2.bill1,
                                       wallet_name = result.bill3.bill2.wallet.Name,
                                       category_name = result.bill3.list_bill.Name,
                                       user_name = result.users.Name
@@ -75,13 +74,13 @@ namespace PrestamosCreciendo.Controllers
 
             if(category != 0)
             {
-                data = data.Where(x => x.bill.Type == category).ToList();
+                data = data.Where(x => x.bills.Type == category).ToList();
             }
 
             BillsDTO dataBills = new BillsDTO()
             {
                 clients = data,
-                total = data.Sum(x => x.bill.Amount),
+                total = data.Sum(x => x.bills.Amount),
                 list_categories = list_categories,
             };
 

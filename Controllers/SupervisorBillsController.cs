@@ -31,44 +31,40 @@ namespace PrestamosCreciendo.Controllers
                          join users in _context.Users on bills.Id_agent equals users.Id
                          select new BillsDTO()
                          {
-                             bill = bills,
+                             bills = bills,
                              category_name = listbill.Name,
                              user_name = users.Name,
                              wallet_name = wallet.Name,
                          }).ToList();
 
-            var ormSum = (from agsup in _context.AgentSupervisor
+            var Sum = (from agsup in _context.AgentSupervisor
                           where agsup.IdSupervisor == CurrentUser.Id
                           join wallet in _context.Wallets on agsup.IdWallet equals wallet.Id
                           join bill in _context.Bills on wallet.Id equals bill.Id_wallet
                           select new { wallet, bill, agsup }).ToList();
 
-            foreach (var Item in ormQry)
+            foreach (var ItemQry in ormQry)
             {
-                Item.bill.Created_at = DateOffset.DateNow(Item.bill.Created_at, CurrentUser.TimeOffset);
-            }
-            foreach (var Item in ormSum)
-            {
-                Item.bill.Created_at = DateOffset.DateNow(Item.bill.Created_at, CurrentUser.TimeOffset);
+                ItemQry.bills.Created_at = DateOffset.DateNow(ItemQry.bills.Created_at, CurrentUser.TimeOffset);
             }
 
             if (date_start != null)
             {
-                ormQry = ormQry.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();
-                ormSum = ormSum.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();
+                ormQry = ormQry.Where(x => x.bills.Created_at.Date >= date_start.Value.Date).ToList();
+                Sum = Sum.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();
             }
             if (date_end != null)
             {
-                ormQry = ormQry.Where(x => x.bill.Created_at.Date <= date_end.Value.Date).ToList();
-                ormSum = ormSum.Where(x => x.bill.Created_at.Date <= date_end.Value.Date).ToList();
+                ormQry = ormQry.Where(x => x.bills.Created_at.Date <= date_end.Value.Date).ToList();
+                Sum = Sum.Where(x => x.bill.Created_at.Date <= date_end.Value.Date).ToList();
             }
 
             if(category != 0)
             {
-                ormQry = ormQry.Where(x=> x.bill.Type == category).ToList();
+                ormQry = ormQry.Where(x=> x.bills.Type == category).ToList();
             }
 
-            float sum = ormSum.Sum(x => x.bill.Amount);
+            float sum = Sum.Sum(x => x.bill.Amount);
 
             BillsDTO data = new BillsDTO()
             {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Model;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 
@@ -58,13 +57,13 @@ namespace PrestamosCreciendo.Controllers
                     select wallet).FirstOrDefault();
 
 
-            DateTime date_startGreater = date_start.AddDays(1);
-            DateTime date_endSooner = date_end.AddDays(-1);
+            DateTime date_startSooner= date_start.AddDays(-1);
+            DateTime date_endlater = date_end.AddDays(1);
 
             DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
 
 
-            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endlater && x.Created_at >= date_startSooner.Date).ToList();
             foreach (var Item in materializedSummary)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -77,7 +76,7 @@ namespace PrestamosCreciendo.Controllers
                             select sum).Sum(x => x.Amount);
 
 
-            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endlater && x.Created_at >= date_startSooner.Date).ToList();
             foreach (var Item in materializedCredit)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -92,7 +91,7 @@ namespace PrestamosCreciendo.Controllers
 
 
 
-            var materializedBills= _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            var materializedBills= _context.Bills.Where(x => x.Created_at.Date <= date_endlater && x.Created_at >= date_startSooner.Date).ToList();
             foreach (var Item in materializedBills)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -105,7 +104,7 @@ namespace PrestamosCreciendo.Controllers
                             select bill).Sum(x => x.Amount);
 
 
-            int days = date_end.DayOfYear - date_start.DayOfYear+1;
+            int days = date_startSooner.DayOfYear - date_start.DayOfYear+1;
 
             StatisticsDTO data = new StatisticsDTO()
             {
