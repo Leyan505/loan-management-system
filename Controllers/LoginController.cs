@@ -48,7 +48,7 @@ namespace PrestamosCreciendo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email, string Password, string Remember = "False", string returnUrl = null)
+        public async Task<IActionResult> Login(string email, string Password, int offset, string Remember = "False", string returnUrl = null)
         {
             ReturnUrl = returnUrl;
 
@@ -63,6 +63,7 @@ namespace PrestamosCreciendo.Controllers
             new Claim("FullName", user.Name),
             new Claim(ClaimTypes.Role, user.Level),
             new Claim("Id", (user.Id).ToString()),
+            new Claim("TimeZoneOffset", offset.ToString()),
         };
 
             var claimsIdentity = new ClaimsIdentity(

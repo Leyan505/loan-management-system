@@ -61,7 +61,14 @@ namespace PrestamosCreciendo.Controllers
             DateTime date_startGreater = date_start.AddDays(1);
             DateTime date_endSooner = date_end.AddDays(-1);
 
-            var materializedSummary = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
+
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            foreach (var Item in materializedSummary)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
 
             float summary = (from sum in materializedSummary
                             where sum.Id_agent == id
@@ -71,6 +78,12 @@ namespace PrestamosCreciendo.Controllers
 
 
             var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            foreach (var Item in materializedCredit)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+
+
             float credit = (from cred in materializedCredit
                             where cred.Id_agent == id
                             && cred.Created_at.Date >= date_start.Date
@@ -78,7 +91,13 @@ namespace PrestamosCreciendo.Controllers
                             select cred).Sum(x => x.Amount_neto);
 
 
+
             var materializedBills= _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            foreach (var Item in materializedBills)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+
             float bills = (from bill in materializedBills
                             where bill.Id_agent == id
                             && bill.Created_at.Date >= date_start.Date

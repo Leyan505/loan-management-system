@@ -36,7 +36,7 @@
                                 @if(@client.amount_net != null)
                                 {
                                     <span class="value">
-                                        @(client.amount_net.Amount_neto + client.gap_credit)
+                                        @(client.amount_net.Sum(x => x.Amount_neto) + client.gap_credit)
                                     </span>
                                 }
                                 else

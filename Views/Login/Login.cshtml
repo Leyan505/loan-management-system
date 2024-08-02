@@ -12,6 +12,16 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+        <script>
+
+            $(document).ready(function () {
+                var dt = new Date();
+                var tz = -dt.getTimezoneOffset();
+                document.getElementById("offset").value = tz;
+            });
+        </script>
 </head>
 <body class="LoginBody">
     <div class="LoginForm">
@@ -32,7 +42,7 @@
                         <input name="Remember" type="checkbox" class="form-check-input" value="True" />
                         <label class="form-check-label">Mantener sesion</label>
                     </div>
-                       
+                     <input hidden name="offset" id="offset" type="number" value=""/>
                     <button class="btn btn-dark" type="submit">ENTRAR</button>
                 </form>
             </div>

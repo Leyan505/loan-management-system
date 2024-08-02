@@ -6,5 +6,6 @@
         public Users users { get; set; }
         public string wallet_name { get; set; }
         public bool Show { get; set; }
+        public string? dtnow { get; set; }
     }
 }

@@ -27,22 +27,35 @@ namespace PrestamosCreciendo.Controllers
                                              select list).ToList();
 
 
-            /*DateTime? date_startGreater = date_start.Value.AddDays(1);
-            DateTime? date_endSooner = date_end.Value.AddDays(-1);*/
+            DateTime? date_startGreater = date_start.Value.AddDays(1);
+            DateTime? date_endSooner = date_end.Value.AddDays(-1);
+
+            DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
 
 
+            var materializedBills = new List<Bills>();
             Func<PrestamosCreciendo.Models.Bills, bool> sql = x => x.Id_agent == CurrentUser.Id;
-            List<Bills> materializedBills = new List<Bills>();
+
             if (date_start != null && date_end != null)
             {
                 sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date >= date_start.Value.Date
                 && x.Created_at.Date <= date_end.Value.Date;
-                materializedBills = _context.Bills.Where(sql).ToList();
+                materializedBills = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner).ToList();
+                foreach (var Item in materializedBills)
+                {
+                    Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+                }
+                materializedBills = materializedBills.Where(sql).ToList();
             }
             else
             {
-                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DateTime.Now.Date;
+                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date <= DateTime.UtcNow.AddDays(1).Date && x.Created_at.Date >= DateTime.UtcNow.AddDays(-1).Date;
                 materializedBills = _context.Bills.Where(sql).ToList();
+                foreach (var Item in materializedBills)
+                {
+                    Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+                }
+                materializedBills = materializedBills.Where(x => x.Created_at.Date == DtNow.Date).ToList();
             }
 
             List<BillsDTO> data = materializedBills

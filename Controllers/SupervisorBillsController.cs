@@ -43,6 +43,15 @@ namespace PrestamosCreciendo.Controllers
                           join bill in _context.Bills on wallet.Id equals bill.Id_wallet
                           select new { wallet, bill, agsup }).ToList();
 
+            foreach (var Item in ormQry)
+            {
+                Item.bill.Created_at = DateOffset.DateNow(Item.bill.Created_at, CurrentUser.TimeOffset);
+            }
+            foreach (var Item in ormSum)
+            {
+                Item.bill.Created_at = DateOffset.DateNow(Item.bill.Created_at, CurrentUser.TimeOffset);
+            }
+
             if (date_start != null)
             {
                 ormQry = ormQry.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();

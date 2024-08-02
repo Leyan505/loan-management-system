@@ -32,8 +32,16 @@ namespace PrestamosCreciendo.Controllers
 
             DateTime date_startGreater = date_start.AddDays(1);
             DateTime date_end = date_start.AddDays(-1);
+            DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
+
+
 
             var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            foreach (var Item in materializedSummary)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+
 
             List<TransactionSummaryDTO> data_summary = (from summary in materializedSummary
                                                         where summary.Created_at.Date == date_start.Date
@@ -55,6 +63,11 @@ namespace PrestamosCreciendo.Controllers
 
 
             var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            foreach (var Item in materializedCredit)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+
 
             List<TransactionCreditDTO> data_credit = (from credit in materializedCredit
                                                       where credit.Created_at.Date == date_start.Date
@@ -74,6 +87,10 @@ namespace PrestamosCreciendo.Controllers
                                                       }).ToList();
 
             var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            foreach (var Item in materializedBill)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
 
             List<Bills> data_bill = (from bill in materializedBill
                                     where bill.Created_at.Date == date_start.Date

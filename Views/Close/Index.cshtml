@@ -22,7 +22,7 @@
                         <tr>
                             <td><span class="value">@client.users.Name @client.users.LastName</span></td>
                             <td><span class="value">@client.wallet_name</span></td>
-                            <td><span class="value">@DateTime.Now.Date.ToShortDateString()</span></td>
+                            <td><span class="value">@Model.FirstOrDefault().dtnow</span></td>
                             <td><span class="value">@client.users.City</span></td>
                             <td>
                                 <a asp-action="Close" asp-controller="Close" asp-route-id="@client.SupervisorHasAgent.IdAgent" class="btn btn-danger btn-xs">Cerrar</a>
