@@ -27,8 +27,6 @@ namespace PrestamosCreciendo.Controllers
                                              select list).ToList();
 
 
-            DateTime? date_startGreater = date_start.Value.AddDays(1);
-            DateTime? date_endSooner = date_end.Value.AddDays(-1);
 
             DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
 
@@ -38,6 +36,8 @@ namespace PrestamosCreciendo.Controllers
 
             if (date_start != null && date_end != null)
             {
+                DateTime date_startGreater = date_start.Value.AddDays(1);
+                DateTime date_endSooner = date_end.Value.AddDays(-1);
                 sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date >= date_start.Value.Date
                 && x.Created_at.Date <= date_end.Value.Date;
                 materializedBills = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner).ToList();
