@@ -95,48 +95,52 @@
                 </thead>
 
                 <tbody>
-                @foreach(DataRouteDTO client in Model)
-                {
-                    <tr id="td_@client.Id">
-                        <td class="hidden">@client.order_list</td>
-                        <td>@client.Id</td>
-                        <td>@client.user.Name @client.user.LastName</td>
-                        <td>@client.days_rest</td>
-                        <td>@client.quote</td>
-                        <td>@client.amount_total</td>
-                        <td id="saldo">@client.saldo</td>
-                        @if(client.last_pay != null)
+                    @if(Model != null)
+                    {
+                        
+                        @foreach(DataRouteDTO client in Model)
                         {
-                            <td>@client.last_pay.Created_at</td>
-                        }
-                        else
-                        {
-                            <td>No hay pagos</td>
-                        }
-                        <td>@client.user.Province</td>
-                        <td>
-                            @if(client.user.Status.Equals("good"))
-                            {
-                                <span class="badge-info badge">BUENO</span>  
-                            }
-                            @if(@client.user.Status.Equals("bad"))
-                            {
-                                <span class="badge-danger badge">MALO</span>      
-                            }
+                            <tr id="td_@client.Id">
+                                <td class="hidden">@client.order_list</td>
+                                <td>@client.Id</td>
+                                <td>@client.user.Name @client.user.LastName</td>
+                                <td>@client.days_rest</td>
+                                <td>@client.quote</td>
+                                <td>@client.amount_total</td>
+                                <td id="saldo">@client.saldo</td>
+                                @if(client.last_pay != null)
+                                {
+                                    <td>@client.last_pay.Created_at</td>
+                                }
+                                else
+                                {
+                                    <td>No hay pagos</td>
+                                }
+                                <td>@client.user.Province</td>
+                                <td>
+                                    @if(client.user.Status.Equals("good"))
+                                    {
+                                        <span class="badge-info badge">BUENO</span>  
+                                    }
+                                    @if(@client.user.Status.Equals("bad"))
+                                    {
+                                        <span class="badge-danger badge">MALO</span>      
+                                    }
 
-                        </td>
-                        <td>
-                            <div class="row row-cols-auto clearfix gx-1">
-                                <div class="col-6 float-start">
-                                    <button data-bs-toggle="modal" data-bs-target="#modal_pay" class="btn btn-success btn-xs" href="payment/@client.Id"><i class="fa fa-money" data-bs-toggle="modal" data-bs-target="#modal_pay"></i> Pagar</button>
-                                </div>
-                                <div class="col-6 float-end">
-                                    <a href="javascript:void(0)" id_user="{{$client->id_user}}" id_credit="{{$client->id}}" class="btn btn-warning btn-xs ajax-btn btn-pagar"><i class="fa fa-archive "></i> Saltar</a>
-                                </div
-                            </div>
-                        </td>
-                    </tr>
-                }
+                                </td>
+                                <td>
+                                    <div class="row row-cols-auto clearfix gx-1">
+                                        <div class="col-6 float-start">
+                                            <button data-bs-toggle="modal" data-bs-target="#modal_pay" class="btn btn-success btn-xs" href="payment/@client.Id"><i class="fa fa-money" data-bs-toggle="modal" data-bs-target="#modal_pay"></i> Pagar</button>
+                                        </div>
+                                        <div class="col-6 float-end">
+                                            <a href="javascript:void(0)" id_user="{{$client->id_user}}" id_credit="{{$client->id}}" class="btn btn-warning btn-xs ajax-btn btn-pagar"><i class="fa fa-archive "></i> Saltar</a>
+                                        </div
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody></table>
         </div><!-- .widget -->
     </div>

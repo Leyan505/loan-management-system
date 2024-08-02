@@ -12,12 +12,12 @@
                         <h3 class="widget-title text-dark">DISPONIBLE TOTAL</h3>
                         <h3 class="widget-title text-dark">
 
-                            <b>@(Model.base_total - Model.total_bill)</b>
+                            <b>@(Model.base_total - Model.total_bill-Model.total_credit)</b>
                             @if (Model.total_summary > 0)
                             {
                                 <span>+</span>
                                 <span class=""> @Model.total_summary</span>
-                                <span class="text-success">= @(Model.base_total - Model.total_bill + Model.total_summary)</span>
+                                <span class="text-success">= @(Model.base_total - Model.total_bill - Model.total_credit + Model.total_summary)</span>
                             }
 
                         </h3>

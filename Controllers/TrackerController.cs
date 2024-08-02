@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class TrackerController : Controller
     {
         private readonly AppDbContext _context;
@@ -16,7 +18,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<SupervisorHasAgentDTO> data = (from asup in _context.AgentSupervisor
                                                 where asup.IdSupervisor == CurrentUser.Id
@@ -34,7 +36,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Create(int id_agent)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
 
             return View(id_agent);
@@ -42,10 +44,15 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Summary(int id, DateTime date_start)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
-            List<TrackerSummaryDTO> data_summary = (from summary in _context.Summary
-                                                    where summary.Created_at.Date == date_start.ToUniversalTime().Date
+            DateTime date_startGreater = date_start.AddDays(1);
+            DateTime date_end = date_start.AddDays(-1);
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<TrackerSummaryDTO> data_summary = (from summary in materializedSummary
+                                                    where summary.Created_at.Date == date_start.Date
                                                     join credit in _context.Credit on summary.Id_credit equals credit.Id
                                                     where credit.Id_agent == id
                                                     join users in _context.Users on credit.Id_user equals users.Id
@@ -62,8 +69,11 @@ namespace PrestamosCreciendo.Controllers
 
                                                     }).ToList();
 
-            List<TrackerCreditDTO> data_credit = (from credit in _context.Credit
-                                                  where credit.Created_at.Date == date_start.ToUniversalTime().Date
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+
+            List<TrackerCreditDTO> data_credit = (from credit in materializedCredit
+                                                  where credit.Created_at.Date == date_start.Date
                                                   && credit.Id_agent == id
                                                   join users in _context.Users on credit.Id_user equals users.Id
                                                   select new TrackerCreditDTO()
@@ -80,8 +90,10 @@ namespace PrestamosCreciendo.Controllers
                                                   }
                                                   ).ToList();
 
-            List<Bills> data_bill = (from bills in _context.Bills
-                                    where bills.Created_at.Date == date_start.ToUniversalTime().Date
+            var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<Bills> data_bill = (from bills in materializedBill
+                                     where bills.Created_at.Date == date_start.Date
                                     && bills.Id_agent == id
                                     select bills).ToList();
 

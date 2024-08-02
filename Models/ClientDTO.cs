@@ -12,7 +12,7 @@
         public int credit_count {  get; set; }
         public int closed {  get; set; }
         public int inprogress { get; set; }
-        public Credit? amount_net { get; set; }
+        public List<Credit>? amount_net { get; set; }
         public float gap_credit { get; set; }
         public float summary_net { get; set; }
         public string status { get; set; } = "good";

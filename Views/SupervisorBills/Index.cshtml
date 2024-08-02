@@ -41,7 +41,7 @@
                     @foreach (BillsDTO client in Model.clients)
                     {
                         <tr>
-                            <td>@client.bill.Created_at.ToLocalTime()</td>
+                            <td>@client.bill.Created_at</td>
                             <td>@client.wallet_name</td>
                             <td>@client.bill.Amount</td>
                             <td>@client.bill.Description</td>

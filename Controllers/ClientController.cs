@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
@@ -6,6 +7,7 @@ using System.Diagnostics.Metrics;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class ClientController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,7 +20,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(string? errorClient)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             var wallet = (from supag in _context.AgentSupervisor
                           where supag.IdSupervisor == CurrentUser.Id
@@ -79,7 +81,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Show(int id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<ClientDTO> data = (from client in _context.AgentHasClient
                                     where client.Id_wallet == id
@@ -112,7 +114,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Edit(int id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             UsersDTO? data = (from user in _context.Users
                               where user.Id == id
@@ -129,6 +131,7 @@ namespace PrestamosCreciendo.Controllers
                                   Status = user.Status,
                                   Nit = user.Nit,
                                   Province = user.Province,
+                                  Id = id
                               }).FirstOrDefault();
 
             return View(data);
@@ -138,7 +141,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Edit(UsersDTO user, int id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             _context.Users.Where(x => x.Id == id).ExecuteUpdate(x => x.SetProperty(x => x.Address, user.Address)
             .SetProperty(x => x.Province, user.Province)
@@ -149,10 +152,11 @@ namespace PrestamosCreciendo.Controllers
             .SetProperty(x => x.lng, user.lng)
             .SetProperty(x => x.Status, user.Status));
 
+
             if (_context.AgentHasClient.Where(x => x.Id_client == id).Any())
             {
                 AgentHasClient wallet = _context.AgentHasClient.Where(x => x.Id_client == id).FirstOrDefault();
-                return View("Show", new {id = wallet.Id});
+                return RedirectToAction("Show", new {id = wallet.Id});
             }
             return RedirectToAction("Index");
         }

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class SupervisorController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,14 +19,14 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
             return View();
         }
 
         public IActionResult AsignarBase()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
             int? supervisorId = CurrentUser.Id;
             var query = (from agent_supervisor in _context.AgentSupervisor
                          where agent_supervisor.IdSupervisor == supervisorId
@@ -43,7 +45,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult UpdateBase(int Id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             var query = _context.Users.Where(x => x.Id == Id)
                 .Join(_context.AgentSupervisor, user => user.Id, agentSup => agentSup.IdAgent,
@@ -63,7 +65,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult UpdateBase(float Base, int AgentSupervisorId)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             var query = (from agent_supervisor in _context.AgentSupervisor
                          where agent_supervisor.IdAgent == AgentSupervisorId

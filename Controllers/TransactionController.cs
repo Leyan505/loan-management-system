@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 using System.Numerics;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "AgentOnly")]
     public class TransactionController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,7 +19,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Create()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View();
         }
@@ -26,9 +28,15 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(DateTime date_start)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
-            List<TransactionSummaryDTO> data_summary = (from summary in _context.Summary
-                                                 where summary.Created_at.Date == date_start.ToUniversalTime().Date
+            ViewData["Name"] = CurrentUser.Name;
+
+            DateTime date_startGreater = date_start.AddDays(1);
+            DateTime date_end = date_start.AddDays(-1);
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<TransactionSummaryDTO> data_summary = (from summary in materializedSummary
+                                                        where summary.Created_at.Date == date_start.Date
                                                  join credit in _context.Credit on summary.Id_credit equals credit.Id
                                                  where credit.Id_agent == CurrentUser.Id
                                                  join users in _context.Users on credit.Id_user equals users.Id
@@ -44,8 +52,12 @@ namespace PrestamosCreciendo.Controllers
                                                      amount = summary.Amount,
                                                      created_at = summary.Created_at,
                                                  }).ToList();
-            List<TransactionCreditDTO> data_credit = (from credit in _context.Credit
-                                                      where credit.Created_at == date_start.ToUniversalTime().Date
+
+
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<TransactionCreditDTO> data_credit = (from credit in materializedCredit
+                                                      where credit.Created_at.Date == date_start.Date
                                                       && credit.Id_agent == CurrentUser.Id
                                                       join users in _context.Users on credit.Id_user equals users.Id
                                                       select new TransactionCreditDTO()
@@ -61,8 +73,10 @@ namespace PrestamosCreciendo.Controllers
                                                           amount_neto = credit.Amount_neto,
                                                       }).ToList();
 
-            List<Bills> data_bill = (from bill in _context.Bills
-                                    where bill.Created_at.Date == date_start.ToUniversalTime().Date
+            var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<Bills> data_bill = (from bill in materializedBill
+                                    where bill.Created_at.Date == date_start.Date
                                     && bill.Id_agent == CurrentUser.Id
                                     select bill).ToList();
             float total_credit;

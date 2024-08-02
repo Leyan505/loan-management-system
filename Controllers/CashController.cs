@@ -5,6 +5,7 @@ using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class CashController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,7 +18,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<SupervisorHasAgentDTO> data = (from supag in _context.AgentSupervisor
                                                 where supag.IdSupervisor == CurrentUser.Id

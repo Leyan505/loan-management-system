@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 using System.Linq.Expressions;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class SupervisorBillsController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,7 +19,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(DateTime? date_start, DateTime? date_end, int category)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
             List<ListBill> list_categories = (from list in _context.ListBills
                                               select list).ToList();
 
@@ -43,13 +45,13 @@ namespace PrestamosCreciendo.Controllers
 
             if (date_start != null)
             {
-                ormQry = ormQry.Where(x => x.bill.Created_at.Date >= date_start.Value.ToUniversalTime().Date).ToList();
-                ormSum = ormSum.Where(x => x.bill.Created_at.Date >= date_start.Value.ToUniversalTime().Date).ToList();
+                ormQry = ormQry.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();
+                ormSum = ormSum.Where(x => x.bill.Created_at.Date >= date_start.Value.Date).ToList();
             }
             if (date_end != null)
             {
-                ormQry = ormQry.Where(x => x.bill.Created_at.Date <= date_end.Value.ToUniversalTime().Date).ToList();
-                ormSum = ormSum.Where(x => x.bill.Created_at.Date <= date_end.Value.ToUniversalTime().Date).ToList();
+                ormQry = ormQry.Where(x => x.bill.Created_at.Date <= date_end.Value.Date).ToList();
+                ormSum = ormSum.Where(x => x.bill.Created_at.Date <= date_end.Value.Date).ToList();
             }
 
             if(category != 0)
@@ -73,15 +75,15 @@ namespace PrestamosCreciendo.Controllers
         /*public IActionResult Edit()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View();
         }*/
 
-        public IActionResult Create()
+        public IActionResult Create(String? Error)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<Wallet> data_wallet = (from supag in _context.AgentSupervisor
                                          where supag.IdSupervisor == CurrentUser.Id
@@ -100,6 +102,8 @@ namespace PrestamosCreciendo.Controllers
                 agents = agents
             };
 
+            if (Error != null) { data.error = new ErrorViewModel() { description = Error }; }
+
             return View(data);
         }
         [HttpPost]
@@ -108,7 +112,7 @@ namespace PrestamosCreciendo.Controllers
             CurrentUser = new LoggedUser(HttpContext);
             if (!_context.AgentSupervisor.Where(x=> x.IdWallet == id_wallet && x.IdAgent == id_agent).Any())
             {
-                return View(new SupervisorBillsCreateDTO() { error = new ErrorViewModel() { description = "Agente no corresponde en esa cartera" } });
+                return RedirectToAction("Create", new{Error = "Agente no corresponde en esa cartera" });
             }
             Bills value = new Bills()
             {
@@ -118,7 +122,6 @@ namespace PrestamosCreciendo.Controllers
                 Type = bill,
                 Amount = amount,
                 Id_agent = id_agent
-
             };
 
             _context.Bills.Add(value);

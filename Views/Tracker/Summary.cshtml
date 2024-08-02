@@ -23,7 +23,7 @@
                         <td><span class="value">@Cred.user_name @Cred.user_lastName</span></td>
                         <td><span class="value">@Cred.credit_id</span></td>
                         <td><span class="value">@Cred.user_province</span></td>
-                        <td><span class="value">@Cred.credit_created_at.Value.ToLocalTime()</span></td>
+                        <td><span class="value">@Cred.credit_created_at.Value</span></td>
                         <td><span class="value">@Cred.credit_utility</span></td>
                         <td><span class="value">@Cred.credit_paymentNumber</span></td>
                         <td><span class="value">@Cred.credit_amountNeto</span></td>
@@ -60,7 +60,7 @@
                         <td><span class="value">@sum.id_credit</span></td>
                         <td><span class="value">@sum.number_index</span></td>
                         <td><span class="value">@sum.amount</span></td>
-                        <td><span class="value">@sum.created_at.Value.ToLocalTime()</span></td>
+                        <td><span class="value">@sum.created_at.Value</span></td>
                     </tr>
                 }
 

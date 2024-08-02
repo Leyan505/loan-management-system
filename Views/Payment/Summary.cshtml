@@ -19,7 +19,7 @@
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item">Credito: <span class="text-purple">@Model.credit_data.Id</span></li>
-                        <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span></li>
+                        <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToString("dd/MM/yyyy HH:mm")</span></li>
                         <li class="list-group-item">Tasa de interés: <span class="text-purple">@Model.credit_data.Utility%</span></li>
                         <li class="list-group-item">Cuotas pactadas: <span class="text-purple">@Model.credit_data.Payment_number</span></li>
                         <li class="list-group-item">Valor cuota: <span class="text-purple">@Model.credit_data.payment_amount</span></li>
@@ -53,7 +53,7 @@
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">Credito: <span class="text-purple">@Model.credit_data.Id</span></li>
-                    <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span></li>
+                    <li class="list-group-item">Fecha de venta: <span class="text-purple">@Model.credit_data.Created_at.ToString("dd/MM/yyyy HH:mm")</span></li>
                     <li class="list-group-item">Tasa de interés: <span class="text-purple">@Model.credit_data.Utility%</span></li>
                     <li class="list-group-item">Cuotas pactadas: <span class="text-purple">@Model.credit_data.Payment_number</span></li>
                     <li class="list-group-item">Valor cuota: <span class="text-purple">@Model.credit_data.payment_amount</span></li>
@@ -85,7 +85,7 @@
                 @foreach(SummaryClients client in @Model.clients)
                 {
                     <tr>
-                        <td>@client.Created_at.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@client.Created_at.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>@client.Number_index</td>
                         <td>@client.Amount</td>
                         <td>@client.rest</td>

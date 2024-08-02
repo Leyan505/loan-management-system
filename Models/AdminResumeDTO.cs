@@ -5,5 +5,6 @@
         public float base_total {  get; set; }
         public float total_bill { get; set; }
         public float total_summary { get; set; }
+        public float total_credit { get; set; }
     }
 }

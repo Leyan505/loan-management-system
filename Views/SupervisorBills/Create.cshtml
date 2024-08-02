@@ -13,27 +13,36 @@
                     <div class="form-group">
                         <label for="name">Agente</label>
                         <select name="id_agent" id="" required class="form-control">
-                            @foreach (Users a in Model.agents)
+                            @if(Model.agents != null)
                             {
-                                <option value="@a.Id">@a.Name</option>
+                                @foreach (Users a in Model.agents)
+                                {
+                                    <option value="@a.Id">@a.Name</option>
+                                }
                             }
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="name">Cartera:</label>
                         <select name="id_wallet" id="" required class="form-control">
-                            @foreach(Wallet w in Model.wallets)
+                            @if (Model.wallets != null)
                             {
-                                <option value="@w.Id">@w.Name</option>
+                                @foreach(Wallet w in Model.wallets)
+                                {
+                                    <option value="@w.Id">@w.Name</option>
+                                }
                             }
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="name">Tipo de gasto:</label>
                         <select name="bill" id="" required class="form-control">
-                            @foreach(ListBill l in Model.bills)
+                            @if(Model.bills != null)
                             {
-                                <option value="@l.Id">@l.Name</option>
+                                @foreach(ListBill l in Model.bills)
+                                {
+                                    <option value="@l.Id">@l.Name</option>
+                                }
                             }
                         </select>
                     </div>
@@ -45,13 +54,15 @@
                         <label for="amount">Detalle</label>
                         <textarea name="description" class="form-control" required id="" cols="30" maxlength="100" rows="5"></textarea>
                     </div>
-                    @if (Model.error != null)
-                    {
-                        @if (Model.error.ShowDescription)
+                    <div class="form-group">
+                        @if (Model.error != null)
                         {
-                            <p style="color:red;">@Model.error.description</p>
+                            @if (Model.error.ShowDescription)
+                            {
+                                <p style="color:red;">@Model.error.description</p>
+                            }
                         }
-                    }
+                    </div>
                     <div class="form-group">
                         <div class="d-grid">
                             <button type="submit" class="btn btnPrimary text-white">Guardar</button>

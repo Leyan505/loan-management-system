@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 using System.Diagnostics.Contracts;
@@ -55,8 +56,9 @@ namespace PrestamosCreciendo.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
             float base_total = (from agsup in _context.AgentSupervisor
                                 select agsup.Base).Sum();
 
@@ -64,7 +66,8 @@ namespace PrestamosCreciendo.Controllers
                                 select bill.Amount).Sum();
             float total_summary = (from summary in _context.Summary
                                    select summary.Amount).Sum();
-
+            float total_credit = (from credit in _context.Credit
+                                  select credit.Amount_neto).Sum();
 
 
             return View(new AdminResumeDTO()
@@ -72,6 +75,7 @@ namespace PrestamosCreciendo.Controllers
                 base_total = base_total,
                 total_bill = total_bill,    
                 total_summary = total_summary,
+                total_credit = total_credit,
             });
         }
 
@@ -79,7 +83,7 @@ namespace PrestamosCreciendo.Controllers
         [HttpGet]
         public IActionResult CreateUsers() {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View();
         }
@@ -88,16 +92,20 @@ namespace PrestamosCreciendo.Controllers
         public async Task<IActionResult> CreateUsers(Users user)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !_context.Users.Where(x => x.Email == user.Email).Any())
             {
                 _context.Users.Add(user);
                 _context.SaveChanges();
-            } 
+            }
+            else if (_context.Users.Where(x => x.Email == user.Email).Any())
+            {
+                return View(new UsersDTO() { Error = new ErrorViewModel() { description = "El username ya existe" } });
+            }
             else
             {
-                return View(new ErrorViewModel { description = "Valores invalidos" });
+                return View(new UsersDTO() { Error = new ErrorViewModel() { description = "Valores invalidos" } });
             }
             return RedirectToAction("ManageUsers", "Admin");
         }
@@ -107,7 +115,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult CreateWallet()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View();
         }
@@ -132,7 +140,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult ManageUsers()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<UsersList> usersList;
 
@@ -176,7 +184,18 @@ namespace PrestamosCreciendo.Controllers
 
                 User.ActiveUser = false;
                 User.Password = GetRandomAlphanumericString(8);
-                _context.Users.Update(User);
+                if (User.Level == "user")
+                {
+                    /*Devolver credito prestado*/
+                    int id_credit = _context.Credit.Where(x => x.Id_user == User.Id).FirstOrDefault().Id;
+
+                    _context.Credit.Remove(_context.Credit.Where(x => x.Id == id_credit).FirstOrDefault());
+                    _context.Users.Remove(User);
+                }
+                else
+                {
+                    _context.Users.Update(User);
+                }
                 _context.SaveChanges();
             }
             if (Action.Equals("Asignar"))
@@ -192,7 +211,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult EditUsers(int Id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             var User = (from user in _context.Users
                        where user.Id == Id
@@ -222,7 +241,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult ManageWallets()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             WalletsList walletList = new WalletsList();
 
@@ -264,7 +283,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult EditWallet(int Id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             var Wallet = (from wallet in _context.Wallets
                         where wallet.Id == Id
@@ -291,10 +310,10 @@ namespace PrestamosCreciendo.Controllers
         }
 
         [HttpGet]
-        public IActionResult AssignAgent(int Id)
+        public IActionResult AssignAgent(int Id, string? ErrorMSJ)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             AgentsDTO Agents = new AgentsDTO()
             {
@@ -317,11 +336,17 @@ namespace PrestamosCreciendo.Controllers
                                    Created_at= wallet.Created_at,
                                    Id = wallet.Id,
                                    Name = wallet.Name,
-                                   ocuped = _context.AgentSupervisor.Where(x => x.IdWallet == wallet.Id).Any()
+                                   ocuped = false
                                }).ToList(),
                 SupervisorId = Id
 
             };
+            if (ErrorMSJ != null)
+            {
+                Agents.Error = new ErrorViewModel() { description = ErrorMSJ };
+            }
+
+
 
             return View(Agents);
         }
@@ -334,6 +359,10 @@ namespace PrestamosCreciendo.Controllers
                 .Any())
             {
                 return RedirectToAction("AssignAgent", "Admin", new {id = IdSupervisor, ErrorMSJ = "Ya está asignado a este agente"});
+            }
+            if(IdAgent == 0)
+            {
+                return RedirectToAction("AssignAgent", "Admin", new { id = IdSupervisor, ErrorMSJ = "Ya no hay agentes disponibles" });
             }
             SupervisorHasAgent relation = new SupervisorHasAgent()
             {

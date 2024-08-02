@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Model;
 using PrestamosCreciendo.Data;
@@ -6,6 +7,7 @@ using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class StatisticsController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,7 +20,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<SupervisorHasAgentDTO> data = (from supag in _context.AgentSupervisor
                                                where supag.IdSupervisor == CurrentUser.Id
@@ -36,7 +38,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Create(int id_agent)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View(id_agent);
         }
@@ -44,7 +46,9 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Show(int id, DateTime date_start, DateTime date_end)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
+
+
 
             var data_supervisor = (from supag in _context.AgentSupervisor
                         where supag.IdAgent == id
@@ -52,24 +56,36 @@ namespace PrestamosCreciendo.Controllers
             Wallet? data_wallet = (from wallet in _context.Wallets
                     where wallet.Id == data_supervisor.IdWallet
                     select wallet).FirstOrDefault();
-            
-            float summary = (from sum in _context.Summary
+
+
+            DateTime date_startGreater = date_start.AddDays(1);
+            DateTime date_endSooner = date_end.AddDays(-1);
+
+            var materializedSummary = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+
+            float summary = (from sum in materializedSummary
                             where sum.Id_agent == id
-                            && sum.Created_at.Date >= date_start.ToUniversalTime().Date
-                            && sum.Created_at.Date <= date_end.ToUniversalTime().Date
+                            && sum.Created_at.Date >= date_start.Date
+                            && sum.Created_at.Date <= date_end.Date
                             select sum).Sum(x => x.Amount);
 
-            float credit = (from cred in _context.Credit
+
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            float credit = (from cred in materializedCredit
                             where cred.Id_agent == id
-                            && cred.Created_at.Date >= date_start.ToUniversalTime().Date
-                            && cred.Created_at.Date <= date_end.ToUniversalTime().Date
+                            && cred.Created_at.Date >= date_start.Date
+                            && cred.Created_at.Date <= date_end.Date
                             select cred).Sum(x => x.Amount_neto);
 
-            float bills = (from bill in _context.Bills
+
+            var materializedBills= _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_endSooner.Date).ToList();
+            float bills = (from bill in materializedBills
                             where bill.Id_agent == id
-                            && bill.Created_at.Date >= date_start.ToUniversalTime().Date
-                            && bill.Created_at.Date <= date_end.ToUniversalTime().Date
+                            && bill.Created_at.Date >= date_start.Date
+                            && bill.Created_at.Date <= date_end.Date
                             select bill).Sum(x => x.Amount);
+
+
             int days = date_end.DayOfYear - date_start.DayOfYear+1;
 
             StatisticsDTO data = new StatisticsDTO()
@@ -79,8 +95,8 @@ namespace PrestamosCreciendo.Controllers
                 credit = credit,
                 days = days,
                 wallet = data_wallet,
-                range = new string("Desde " + date_start.ToLocalTime().ToShortDateString()
-                + " hasta " + date_end.ToLocalTime().ToShortDateString())
+                range = new string("Desde " + date_start.ToShortDateString()
+                + " hasta " + date_end.ToShortDateString())
             };
             return View(data);
         }

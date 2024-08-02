@@ -13,12 +13,19 @@
                     <div class="form-group">
                         <label class="mb-1" >Agente:</label>
                         <select class="form-control mb-3" name="IdAgent">
-                            @foreach(UsersAssignDTO user in Model.AgentsList)
-                            {
-                                @if(!user.ocuped)
+                            @if (Model.AgentsList.Where(x => x.ocuped == false).Any())
+                                            {
+                                foreach(UsersAssignDTO user in Model.AgentsList)
                                 {
-                                    <option value=@user.Id>@user.Name</option>
+                                    if(!user.ocuped)
+                                    {
+                                        <option value=@user.Id>@user.Name</option>
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                <option value="0">No hay agentes disponibles</option>
                             }
                         </select>
                         <label class="mb-1" >Cartera:</label>
@@ -36,10 +43,15 @@
                     <div class="form-group">
                         <div class="d-grid">
                             <button type="submit" class="btn text-white" style="background-color:rgb(47, 50, 144);">Asignar</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-grid">
+                            <button type="submit" class="btn text-white" style="background-color:rgb(47, 50, 144);">Asignar</button>
                             @if (Model.Error != null)
                             {
                                 <p style="color:red;">@Model.Error.description</p>
-                        
+
                             }
                         </div>
                     </div>

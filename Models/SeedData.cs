@@ -22,21 +22,21 @@ namespace PrestamosCreciendo.Models
                     {
                         Name = "admin",
                         Email = "admin@admin.com",
-                        Password = "1234",
+                        Password = "12345678",
                         Level = "admin"
                     },
                     new Users
                     {
                         Name = "supervisor",
                         Email = "supervisor@supervisor.com",
-                        Password = "1234",
+                        Password = "12345678",
                         Level = "supervisor"
                     },
                     new Users
                     {
                         Name = "agente",
                         Email = "agente@agente.com",
-                        Password = "1234",
+                        Password = "12345678",
                         Level = "agente",
                         Country = "Nicaragua",
                         City = "Managua"
@@ -107,6 +107,10 @@ namespace PrestamosCreciendo.Models
                     new Countries
                     {
                         Name = "Nicaragua",
+                    },
+                    new Countries
+                    {
+                        Name = "USA",
                     }
                 );
                 context.SaveChanges();

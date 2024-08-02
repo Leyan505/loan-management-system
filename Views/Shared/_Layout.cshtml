@@ -19,9 +19,9 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3" style="background-color: rgba(47, 50, 144, 0.69)">
             <div class="container-fluid">
-                <a class="navbar-brand" style="text-transform:uppercase" asp-area="" asp-controller=@ViewData["Level"] asp-action="Index">
+                <a class="navbar-brand" style="text-transform:uppercase" asp-area="" asp-controller=@ViewData["Name"] asp-action="Index">
                     <img src="~/resources/images/logo.png" width="35" height="30" class="d-inline-block align-text-top">
-                    @ViewData["Level"]
+                    @ViewData["Name"]
                 </a>
                 <a id="logout" type="button" asp-controller="Login" asp-action="Logout">
                     <i class="fa-solid fa-right-from-bracket"></i>

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "AgentOnly")]
     public class RouteController : Controller
     {
         private readonly AppDbContext _context;
@@ -16,7 +18,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(string? request)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<Credit> data = (from credit in _context.Credit
                                       where credit.Id_agent == CurrentUser.Id

@@ -13,7 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
         {
-            options.ExpireTimeSpan = TimeSpan.FromDays(1);
+            options.ExpireTimeSpan = TimeSpan.FromDays(30);
             options.SlidingExpiration = true;
             options.AccessDeniedPath = "/Forbidden/";
             options.LoginPath = "/Login/";
@@ -23,10 +23,14 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy =>
                       policy.RequireClaim(ClaimTypes.Role, "admin"));
+    options.AddPolicy("AgentOnly", policy =>
+                      policy.RequireClaim(ClaimTypes.Role, "agente"));
+    options.AddPolicy("SupervisorOnly", policy =>
+                      policy.RequireClaim(ClaimTypes.Role, "supervisor"));
 });
 
 var app = builder.Build();
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 SeedData.Initialize(app.Configuration);
 

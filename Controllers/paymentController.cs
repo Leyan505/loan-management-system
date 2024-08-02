@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "AgentOnly")]
     public class paymentController : Controller
     {
         private readonly AppDbContext _context;
@@ -22,7 +24,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(string? format)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<PaymentDTO> data_user = (from data in _context.Credit
                               where data.Id_agent == CurrentUser.Id
@@ -113,7 +115,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult CreatePayment(PaymentDTO data_payment)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
             return View("CreatePayment", data_payment);
         }
 
@@ -219,7 +221,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Summary(int id_credit, string? show)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             if (!_context.Credit.Where(x => x.Id == id_credit).Any())
             {

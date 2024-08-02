@@ -24,7 +24,7 @@
                             <td><span class="value">@cred.name @cred.last_name</span></td>
                             <td><span class="value">@cred.credit_id</span></td>
                             <td><span class="value">@cred.province</span></td>
-                            <td><span class="value">@cred.created_at.ToLocalTime()</span></td>
+                            <td><span class="value">@cred.created_at</span></td>
                             <td><span class="value">@cred.utility</span></td>
                             <td><span class="value">@cred.payment_number</span></td>
                             <td><span class="value">@cred.amount_neto</span></td>
@@ -59,7 +59,7 @@
                 {  
                     <tr>
                         <td><span class="value">@sum.name @sum.last_name</span></td>
-                        <td><span class="value">@sum.created_at.ToLocalTime()</span></td>
+                        <td><span class="value">@sum.created_at</span></td>
                         <td><span class="value">@sum.id_credit</span></td>
                         <td><span class="value">@sum.number_index</span></td>
                         <td><span class="value">@sum.total_payment</span></td>

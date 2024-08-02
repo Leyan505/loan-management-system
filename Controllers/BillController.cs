@@ -1,11 +1,14 @@
 ﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrestamosCreciendo.Data;
 using PrestamosCreciendo.Models;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "AgentOnly")]
     public class BillController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,24 +21,31 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index(DateTime? date_start, DateTime? date_end, int category)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<ListBill> list_categories = (from list in _context.ListBills
                                              select list).ToList();
 
-            Expression<Func<PrestamosCreciendo.Models.Bills, bool>> sql = x => x.Id_agent == CurrentUser.Id;
 
-            if(date_start != null && date_end != null)
+            /*DateTime? date_startGreater = date_start.Value.AddDays(1);
+            DateTime? date_endSooner = date_end.Value.AddDays(-1);*/
+
+
+            Func<PrestamosCreciendo.Models.Bills, bool> sql = x => x.Id_agent == CurrentUser.Id;
+            List<Bills> materializedBills = new List<Bills>();
+            if (date_start != null && date_end != null)
             {
-                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date >= date_start.Value.ToUniversalTime().Date
-                && x.Created_at.Date <= date_end.Value.ToUniversalTime().Date;
+                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date >= date_start.Value.Date
+                && x.Created_at.Date <= date_end.Value.Date;
+                materializedBills = _context.Bills.Where(sql).ToList();
             }
             else
             {
-                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DateTime.UtcNow.Date;
+                sql = x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DateTime.Now.Date;
+                materializedBills = _context.Bills.Where(sql).ToList();
             }
 
-            List<BillsDTO> data = _context.Bills.Where(sql)
+            List<BillsDTO> data = materializedBills
                                   .Join(_context.Wallets, wallet => wallet.Id_wallet, bill => bill.Id,
                                   (bill1, wallet) => new { bill1, wallet })
                                   .Join(_context.ListBills, bill => bill.bill1.Type, list_bill => list_bill.Id,
@@ -67,7 +77,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Create()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<ListBill> data = _context.ListBills.Select(x => x).ToList();
 

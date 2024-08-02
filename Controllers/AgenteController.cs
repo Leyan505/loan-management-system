@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "AgentOnly")]
     public class AgenteController : Controller
     {
         private readonly AppDbContext _context;
@@ -25,16 +27,25 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
-            float total_summary = (from summary in _context.Summary
-                                   where summary.Created_at.DayOfYear == DateTime.UtcNow.DayOfYear && summary.Created_at.Year == DateTime.UtcNow.Year 
+            DateTime date_startGreater = DateTime.Now.AddDays(1).Date;
+            DateTime date_end = DateTime.Now.AddDays(-1).Date;
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            float total_summary = (from summary in materializedSummary
+                                   where summary.Created_at.Date == DateTime.Now.Date
                                    && summary.Id_agent == CurrentUser.Id
                                    join credit in _context.Credit on summary.Id_credit equals credit.Id
                                    join users in _context.Users on credit.Id_user equals users.Id
                                    select summary.Amount).Sum();
-            CloseDay? closeDay = (from close_day in _context.CloseDay
-                                  where close_day.Created_at.DayOfYear == DateTime.UtcNow.DayOfYear && close_day.Created_at.Year == DateTime.UtcNow.Year 
+
+
+            var materializedClose = _context.CloseDay.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            CloseDay? closeDay = (from close_day in materializedClose
+                                  where close_day.Created_at.Date == DateTime.Now.Date
                                   &&close_day.Id_agent == CurrentUser.Id
                                   select close_day).FirstOrDefault();
 
@@ -42,16 +53,24 @@ namespace PrestamosCreciendo.Controllers
                           where supervisorAgent.IdAgent == CurrentUser.Id
                           select supervisorAgent).FirstOrDefault().Base;
 
-            float base_credit = (from credit in _context.Credit
-                                 where credit.Created_at.DayOfYear == DateTime.UtcNow.DayOfYear && credit.Created_at.Year == DateTime.UtcNow.Year
+
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            float base_credit = (from credit in materializedCredit
+                                 where credit.Created_at.Date == DateTime.Now.Date
                                  && credit.Id_agent == CurrentUser.Id
                                  select credit).Sum(x => x.Amount_neto);
             Base -= base_credit;
 
-            List<BillsResumeDTO> bill = _context.Bills.Where(x => x.Id_agent == CurrentUser.Id)
+
+            var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+
+            List<BillsResumeDTO> bill = materializedBill.Where(x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DateTime.Now.Date)
                          .Join(_context.Wallets, bills => bills.Id_wallet, wallets => wallets.Id,
                          (bills, wallets) => new BillsResumeDTO { bill = bills, wallet_name = wallets.Name })
                          .ToList();
+
+
             AgentResumeDTO data = new AgentResumeDTO()
             {
                 base_agent = Base,
@@ -66,7 +85,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult NewClient(int Id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             if (Id != 0)
             {
@@ -91,7 +110,7 @@ namespace PrestamosCreciendo.Controllers
 
         public IActionResult ClientData(int Id) {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             if (Id != 0)
             {
@@ -117,7 +136,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult NewClient(UsersDTO user, float amount, float utility, int payment_number)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             float Base = (from agentSupervisor in _context.AgentSupervisor
                           where agentSupervisor.IdAgent == CurrentUser.Id
@@ -223,7 +242,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult ShowClients()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             var agent_has_client = (from agentClient in _context.AgentHasClient
                                     where agentClient.Id_agent == CurrentUser.Id
@@ -255,7 +274,7 @@ namespace PrestamosCreciendo.Controllers
                                         select credit).Count(),
                         amount_net = (from credit in _context.Credit
                                       where credit.Id_user == user.Id && credit.Status == "inprogress"
-                                      select credit).FirstOrDefault(),
+                                      select credit).ToList(),
                         Id = user.Id,
                         lat = user.lat,
                         lng = user.lng,
@@ -265,13 +284,18 @@ namespace PrestamosCreciendo.Controllers
                     if (client.amount_net != null)
                     {
                         client.summary_net = (from summary in _context.Summary
-                                              where summary.Id_credit == client.amount_net.Id
+                                              where summary.Id_agent == CurrentUser.Id
+                                              join credit in _context.Credit on summary.Id_credit equals credit.Id
+                                              where credit.Id == user.Id
                                               select summary.Amount).Sum();
-                        float tmp_credit = client.amount_net.Amount_neto;
+                        float tmp_credit = client.amount_net.Sum(x => x.Amount_neto);
                         float tmp_rest = tmp_credit - client.summary_net;
                         client.summary_net = tmp_rest;
 
-                        client.gap_credit = tmp_credit * client.amount_net.Utility;
+                        foreach (var utility in client.amount_net)
+                        {
+                            client.gap_credit += utility.Amount_neto * utility.Utility;
+                        }
                     }
                     else { client.summary_net = 0; }
 
@@ -285,14 +309,14 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Simulator()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
             return View();
         }
 
         public IActionResult HistoryIndex()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
 
             return View();
         }
@@ -301,12 +325,24 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult HistoryCreate(DateTime date_start)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Name;
+            ViewData["Name"] = CurrentUser.Name;
+
 
             float base_amount = _context.AgentSupervisor.Where(x => x.IdAgent == CurrentUser.Id).FirstOrDefault().Base;
-            float today_amount = _context.Summary.Where(x => x.Created_at.Date == date_start.ToUniversalTime().Date && x.Id_agent == CurrentUser.Id).Sum(x => x.Amount);
-            float today_sale = _context.Credit.Where(x => x.Created_at.Date == date_start.ToUniversalTime().Date && x.Id_agent == CurrentUser.Id).Sum(x => x.Amount_neto);
-            float bills = _context.Bills.Where(x => x.Created_at.Date == date_start.ToUniversalTime().Date).Sum(x => x.Amount);
+
+            DateTime date_startGreater = date_start.AddDays(1);
+            DateTime date_end = date_start.AddDays(-1);
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            float today_amount = materializedSummary.Where(x => x.Created_at.Date == date_start.Date && x.Id_agent == CurrentUser.Id).Sum(x => x.Amount);
+
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            float today_sale = materializedCredit.Where(x => x.Created_at.Date == date_start.Date && x.Id_agent == CurrentUser.Id).Sum(x => x.Amount_neto);
+
+            var materializedBill= _context.Bills.Where(x => x.Created_at.Date <= date_startGreater && x.Created_at >= date_end.Date).ToList();
+            float bills = materializedBill.Where(x => x.Created_at.Date == date_start).Sum(x => x.Amount);
+
+
             float total = (float)base_amount+today_amount - (float)today_sale+bills;
             float average = 1000;
 

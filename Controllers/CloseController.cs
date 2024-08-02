@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
 using PrestamosCreciendo.Data;
@@ -6,6 +7,7 @@ using PrestamosCreciendo.Models;
 
 namespace PrestamosCreciendo.Controllers
 {
+    [Authorize(Policy = "SupervisorOnly")]
     public class CloseController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,7 +20,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Index()
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             List<CloseDTO> data = _context.AgentSupervisor.Where(x => x.IdSupervisor == CurrentUser.Id)
                                   .Join(_context.Users, agentSup => agentSup.IdAgent, user => user.Id,
@@ -60,7 +62,7 @@ namespace PrestamosCreciendo.Controllers
         public IActionResult Close(int id)
         {
             CurrentUser = new LoggedUser(HttpContext);
-            ViewData["Level"] = CurrentUser.Level;
+            ViewData["Name"] = CurrentUser.Name;
 
             float base_amount = _context.AgentSupervisor.Where(x => x.IdAgent == id).FirstOrDefault().Base;
             float today_amount = _context.Summary.Where(x => x.Created_at.Date == DateTime.UtcNow.Date && x.Id_agent == id)
