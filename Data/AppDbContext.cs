@@ -28,5 +28,6 @@ namespace PrestamosCreciendo.Data
         public DbSet<Bills> Bills { get; set; }
         public DbSet<ListBill> ListBills { get; set; }
         public DbSet<Countries> Countries { get; set; }
+        public DbSet<NotPay> NotPay { get; set; }
     }
 }

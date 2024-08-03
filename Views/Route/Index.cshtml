@@ -134,7 +134,7 @@
                                             <button data-bs-toggle="modal" data-bs-target="#modal_pay" class="btn btn-success btn-xs" href="payment/@client.Id"><i class="fa fa-money" data-bs-toggle="modal" data-bs-target="#modal_pay"></i> Pagar</button>
                                         </div>
                                         <div class="col-6 float-end">
-                                            <a href="javascript:void(0)" id_user="{{$client->id_user}}" id_credit="{{$client->id}}" class="btn btn-warning btn-xs ajax-btn btn-pagar"><i class="fa fa-archive "></i> Saltar</a>
+                                            <a href="javascript:void(0)" id_user="@client.user.Id" id_credit="@client.Id" class="btn btn-warning btn-xs ajax-btn btn-pagar"><i class="fa fa-archive "></i> Saltar</a>
                                         </div
                                     </div>
                                 </td>

@@ -29,28 +29,50 @@ namespace PrestamosCreciendo.Controllers
             List<DataRouteDTO> clients = new List<DataRouteDTO>();
             DateTime dt = DateTime.UtcNow;
 
+            DateTime date_endLater = DateTime.UtcNow.AddDays(1).Date;
+            DateTime date_startSooner = DateTime.UtcNow.AddDays(-1).Date;
+            DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
+
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
+
+            foreach (var Item in materializedSummary)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+            var materializedNotPay = _context.NotPay.Where(x => x.Created_at.Value.Date <= date_endLater && x.Created_at.Value.Date >= date_startSooner).ToList();
+
+            foreach (var Item in materializedNotPay)
+            {
+                Item.Created_at = DateOffset.DateNow((DateTime)Item.Created_at, CurrentUser.TimeOffset);
+            }
+
             foreach (Credit d in data)
             {   
-                if(!_context.Summary
-                    .Where(x => x.Id_credit == d.Id && x.Created_at.DayOfYear == DateTime.UtcNow.DayOfYear && x.Created_at.Year == DateTime.UtcNow.Year)
-                    .Any())
+                if(!(materializedSummary
+                    .Where(x => x.Id_credit == d.Id && x.Created_at.Date == DtNow.Date)
+                    .Any()))
                     {
-                        clients.Add(new DataRouteDTO()
+                        if (!(materializedNotPay
+                    .Where(x => x.Id_credit == d.Id && x.Created_at.Value.Date == DtNow.Date)
+                    .Any()))
                         {
-                            user = _context.Users.Find(d.Id_user),
-                            amount_total = d.Amount_neto+(d.Amount_neto*d.Utility),
-                            days_rest = (dt - d.Created_at).Days,
-                            saldo = (d.Amount_neto + (d.Amount_neto * d.Utility))-
-                            _context.Summary.Where(x => x.Id_credit == d.Id).Sum(x => x.Amount),
-                            quote = ((float)(d.Amount_neto*d.Utility)+(float)d.Amount_neto)/(float)d.Payment_number,
-                            last_pay = _context.Summary.Where(x => x.Id_credit == d.Id)
-                            .OrderByDescending(x => x.Id).FirstOrDefault(),
-                            request = request,
-                            Id = d.Id,
-                            order_list = d.Order_list,
+                            clients.Add(new DataRouteDTO()
+                            {
+                                user = _context.Users.Find(d.Id_user),
+                                amount_total = d.Amount_neto+(d.Amount_neto*d.Utility),
+                                days_rest = (dt - d.Created_at).Days,
+                                saldo = (d.Amount_neto + (d.Amount_neto * d.Utility))-
+                                _context.Summary.Where(x => x.Id_credit == d.Id).Sum(x => x.Amount),
+                                quote = ((float)(d.Amount_neto*d.Utility)+(float)d.Amount_neto)/(float)d.Payment_number,
+                                last_pay = _context.Summary.Where(x => x.Id_credit == d.Id)
+                                .OrderByDescending(x => x.Id).FirstOrDefault(),
+                                request = request,
+                                Id = d.Id,
+                                order_list = d.Order_list,
 
 
-                        });
+                            });
+                        }
                     }
                 
             }

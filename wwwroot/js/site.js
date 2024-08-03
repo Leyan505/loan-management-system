@@ -46,14 +46,14 @@
         var id_user = $(this).attr('id_user');
         var id_credit = $(this).attr('id_credit');
         $(this).prop("disabled", true);
-        $.get("/payment/" + id_user + "/edit",
+        $.get("/payment/Edit/" + id_user,
             {
                 id_credit: id_credit,
                 ajax: true
             }
         )
             .done(function (data) {
-                $('#td_' + id_credit).addClass('hidden');
+                $('#td_' + id_credit).addClass('d-none');
             });
     });
 
@@ -65,8 +65,8 @@
         });
         $('body .modal-pay .msg-success .text-success').val(0);
         $('body .modal-pay .msg-success .text-primary').val(0);
-        $('body .modal-pay .main-body').removeClass('visually-hidden');
-        $('body .modal-pay .msg-success').addClass('visually-hidden');
+        $('body .modal-pay .main-body').removeClass('d-none');
+        $('body .modal-pay .msg-success').addClass('d-none');
         $('body .modal-pay #name').val('');
         $('body .modal-pay #credit_id').val('');
         $('body .modal-pay #amount_value').val('');

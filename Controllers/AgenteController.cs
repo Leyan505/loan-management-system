@@ -32,7 +32,7 @@ namespace PrestamosCreciendo.Controllers
             DateTime date_startSooner = DateTime.UtcNow.AddDays(-1).Date;
             DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
 
-            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
 
             foreach(var Item in materializedSummary)
             {
@@ -40,14 +40,14 @@ namespace PrestamosCreciendo.Controllers
             }
 
             float total_summary = (from summary in materializedSummary
-                                   where summary.Created_at.Date == DtNow
+                                   where summary.Created_at.Date == DtNow.Date
                                    && summary.Id_agent == CurrentUser.Id
                                    join credit in _context.Credit on summary.Id_credit equals credit.Id
                                    join users in _context.Users on credit.Id_user equals users.Id
                                    select summary.Amount).Sum();
 
 
-            var materializedClose = _context.CloseDay.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedClose = _context.CloseDay.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
 
             foreach (var Item in materializedClose)
             {
@@ -55,7 +55,7 @@ namespace PrestamosCreciendo.Controllers
             }
 
             CloseDay? closeDay = (from close_day in materializedClose
-                                  where close_day.Created_at.Date == DtNow
+                                  where close_day.Created_at.Date == DtNow.Date
                                   && close_day.Id_agent == CurrentUser.Id
                                   select close_day).FirstOrDefault();
 
@@ -64,7 +64,7 @@ namespace PrestamosCreciendo.Controllers
                           select supervisorAgent).FirstOrDefault().Base;
 
 
-            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
 
             foreach (var Item in materializedCredit)
             {
@@ -72,7 +72,7 @@ namespace PrestamosCreciendo.Controllers
             }
 
             float base_credit = (from credit in materializedCredit
-                                 where credit.Created_at.Date == DtNow
+                                 where credit.Created_at.Date == DtNow.Date
                                  && credit.Id_agent == CurrentUser.Id
                                  select credit).Sum(x => x.Amount_neto);
             Base -= base_credit;
@@ -83,7 +83,7 @@ namespace PrestamosCreciendo.Controllers
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
             }
-            List<BillsResumeDTO> bill = materializedBill.Where(x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DtNow)
+            List<BillsResumeDTO> bill = materializedBill.Where(x => x.Id_agent == CurrentUser.Id && x.Created_at.Date == DtNow.Date)
                          .Join(_context.Wallets, bills => bills.Id_wallet, wallets => wallets.Id,
                          (bills, wallets) => new BillsResumeDTO { bill = bills, wallet_name = wallets.Name })
                          .ToList();

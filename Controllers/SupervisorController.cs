@@ -20,7 +20,24 @@ namespace PrestamosCreciendo.Controllers
         {
             CurrentUser = new LoggedUser(HttpContext);
             ViewData["Name"] = CurrentUser.Name;
-            return View();
+
+            DateTime date_endLater = DateTime.UtcNow.AddDays(1).Date;
+            DateTime date_startSooner = DateTime.UtcNow.AddDays(-1).Date;
+            DateTime DtNow = DateOffset.DateNow(DateTime.UtcNow, CurrentUser.TimeOffset);
+
+            var materializedClose = _context.CloseDay.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
+
+            foreach (var Item in materializedClose)
+            {
+                Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
+            }
+
+            CloseDay? closeDay = (from close_day in materializedClose
+                                  where close_day.Created_at.Date == DtNow.Date
+                                  && close_day.Id_supervisor == CurrentUser.Id
+                                  select close_day).FirstOrDefault();
+
+            return View(closeDay);
         }
 
         public IActionResult AsignarBase()

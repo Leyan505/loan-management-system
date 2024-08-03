@@ -291,5 +291,36 @@ namespace PrestamosCreciendo.Controllers
 
             return View(data); 
         }
+
+        public IActionResult Edit(RequestEdit request, int id)
+        {
+            CurrentUser = new LoggedUser(HttpContext);
+            ViewData["Name"] = CurrentUser.Name;
+
+            if (request.id_credit == 0)
+            {
+                return Json("Id credito");
+            }
+
+            NotPay values = new NotPay()
+            {
+                Created_at = DateTime.UtcNow,
+                Id_credit = request.id_credit,
+                Id_user = id,
+            };
+
+            _context.NotPay.Add(values);
+            _context.SaveChanges();
+
+            if (request.ajax)
+            {
+                Response data = new Response()
+                {
+                    status = "success"
+                };
+                return Json(data);
+            }
+            return RedirectToAction("Index", "Route");
+        }
     }
 }

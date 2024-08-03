@@ -38,7 +38,7 @@ namespace PrestamosCreciendo.Controllers
                 datum.wallet_name = _context.Wallets.Where(x => x.Id == datum.SupervisorHasAgent.IdWallet)
                                     .FirstOrDefault().Name;
 
-                var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+                var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
                 foreach (var Item in materializedSummary)
                 {
                     Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -48,7 +48,7 @@ namespace PrestamosCreciendo.Controllers
 
                 if (summary) { datum.Show = true; }
 
-                var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+                var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
                 foreach (var Item in materializedCredit)
                 {
                     Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -58,7 +58,7 @@ namespace PrestamosCreciendo.Controllers
 
                 if (credit) { datum.Show = true; }
 
-                var materializedClose = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+                var materializedClose = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
                 foreach (var Item in materializedClose)
                 {
                     Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -87,7 +87,7 @@ namespace PrestamosCreciendo.Controllers
 
             float base_amount = _context.AgentSupervisor.Where(x => x.IdAgent == id).FirstOrDefault().Base;
 
-            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedSummary = _context.Summary.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
             foreach (var Item in materializedSummary)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -97,7 +97,7 @@ namespace PrestamosCreciendo.Controllers
                 .Sum(x => x.Amount);
 
 
-            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedCredit = _context.Credit.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
             foreach (var Item in materializedCredit)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -106,7 +106,7 @@ namespace PrestamosCreciendo.Controllers
             float today_sell = materializedCredit.Where(x => x.Created_at.Date == DtNow.Date && x.Id_agent == id)
                 .Sum(x => x.Amount_neto);
 
-            var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_endLater && x.Created_at >= date_startSooner.Date).ToList();
+            var materializedBill = _context.Bills.Where(x => x.Created_at.Date <= date_endLater && x.Created_at.Date >= date_startSooner).ToList();
             foreach (var Item in materializedBill)
             {
                 Item.Created_at = DateOffset.DateNow(Item.Created_at, CurrentUser.TimeOffset);
@@ -160,7 +160,7 @@ namespace PrestamosCreciendo.Controllers
             _context.CloseDay.Add(values);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Supervisor");
         }
 
     }
